@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Lab10",
-    "slug": "Lab10",
+    "name": "CalCal",
+    "slug": "CalCal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
