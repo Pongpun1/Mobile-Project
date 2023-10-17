@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet,Text ,View, Image, TextInput, TouchableOpacity,} from 'react-native';
+import firebase from '../database/calcalDB';
 
 const LoginScreen = ({navigation}) => {
   return (
-    <>
     <View style={styles.container}>
-      <Image style={styles.stretch} source={require('/assets/bmi.png')}/>
+      <Image style={styles.stretch} source={require('../assets/bmi.png')}/>
       <Text style={styles.HeadText}>CalCal</Text>
       <Text style={styles.Text}>ชื่อผู้ใช้งาน</Text>
       <TextInput style={styles.input} placeholder="Username"/>
@@ -23,7 +23,6 @@ const LoginScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
     </View>
-    </>
   );
 }
 
