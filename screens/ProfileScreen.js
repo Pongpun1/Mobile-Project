@@ -1,21 +1,51 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  Picker,
+  Pressable,
+  Platform,
 } from "react-native";
+import {Picker} from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const ProfileScreen = ({ navigation }) => {
 
-  const [Activity, setActivity] = React.useState("");
+  const formatDate = (rawDate) =>{
+    let date = new Date(rawDate);
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let day = date.getDate();
+    return `${day}/${month}/${year}`;
+  }
+
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [date, setDate] = useState(new Date())
+  const [showPicker, setShowPicker] = useState(false);
+  const toggleDatePicker = () =>{
+    setShowPicker(!showPicker);
+  }
+  const ChangeDate = ({type}, selectedDate) =>{
+    if (type == "set"){
+      const currentDate = selectedDate;
+      setDate(currentDate);
+      if(Platform.OS == "android"){
+        toggleDatePicker()
+        setDateOfBirth(formatDate(currentDate));
+      }
+    } else{
+      toggleDatePicker()
+    }
+  }
+
+  const [Activity, setActivity] = useState("");
   const onValueChange = (itemValue) => {
     setActivity(itemValue);
   };
 
-  const [Gender, setGender] = React.useState("");
+  const [Gender, setGender] = useState("");
   const onGenderValueChange = (itemValue) => {
     setGender(itemValue);
   };
@@ -41,12 +71,35 @@ const ProfileScreen = ({ navigation }) => {
           </Picker>
 
           <Text style={styles.Text}>วันเกิด</Text>
-          <TextInput style={styles.input} />
-          
+          {showPicker &&(
+            <DateTimePicker
+            mode="date"
+            display="spinner"
+            value={date}
+            onChange={ChangeDate}
+            maximumDate={new Date()}
+          />
+          )}
+          <Pressable onPress={toggleDatePicker}>
+            <TextInput 
+              style={[styles.input, { color: '#000000' }]}
+              placeholder="ระบุวันเกิด"
+              value={dateOfBirth}
+              onChangeText={setDateOfBirth}
+              editable={false}
+            />
+          </Pressable>
+       
           <Text style={styles.Text}>น้ำหนัก (กิโลกรัม)</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          />
           <Text style={styles.Text}>ส่วนสูง (เซนติเมตร)</Text>
-          <TextInput style={styles.input} />
+          <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          />
 
           <Text style={styles.Text}>การออกกำลังกาย</Text>
           <Picker
@@ -87,7 +140,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#D9D9D9",
     fontSize: 15,
-    opacity: 0.6,
+    opacity: 1,
   },
   button: {
     width: 100,
