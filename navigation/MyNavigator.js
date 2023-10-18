@@ -14,9 +14,6 @@ import BMIscreen from "../screens/BMI";
 import HistoryScreen from "../screens/History";
 
 import RegisterScreen from "../screens/RegisterScreen";
-import AddFoodScreen from "../screens/AddFodd";
-
-import AccountScreen from "../screens/AccountScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
