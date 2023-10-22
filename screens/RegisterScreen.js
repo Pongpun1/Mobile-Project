@@ -29,68 +29,86 @@ class RegisterScreen extends Component {
   }
 
   store() {
-    this.props.navigation.navigate("ข้อมูลส่วนตัว");
-    // if (bcrypt.compareSync("plain", "hashtext")){
-    //   console.log("true");
-    //   return;
-    // }
+    // this.props.navigation.navigate("ข้อมูลส่วนตัว",{key:"Z4HNI9AMbdVA8piXkJQE"});
+    //กรุณากรอกข้อมูลให้ครบทุกช่อง
+    if (!this.state.username || !this.state.email || !this.state.password || !this.state.confirmPassword) {
+      Alert.alert(
+        "Missing Information",
+        "กรุณากรอกข้อมูลให้ครบทุกช่อง"
+      );
+      return;
+    }
+    //รหัสผ่านต้องเหมือนกัน
+    if (this.state.password !== this.state.confirmPassword) {
+      this.setState({
+        password: '',
+        confirmPassword: ''
+      });
+      Alert.alert(
+        "Password Mismatch",
+        "รหัสผ่านต้องเหมือนกัน"
+      );
+      return;
+    }
+    //โปรดป้อนอีเมลให้ถูกต้อง
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.state.email)) {
+      Alert.alert(
+        "Invalid Email",
+        "โปรดป้อนอีเมลให้ถูกต้อง"
+      );
+      return;
+    }
+
+    const trimmedUsername = this.state.username.trim(); // ตัดช่องว่างด้านหน้าและด้านหลังของชื่อผู้ใช้
+    const trimmedEmail = this.state.email.trim(); // ตัดช่องว่างด้านหน้าและด้านหลังของอีเมล
+
+    const salt = bcrypt.genSaltSync(10);
+    //hashPassword
+    const hashedPassword = bcrypt.hashSync(this.state.username+this.state.password, salt)
+
+    //ตรวจ Username ซ้ำ
+    this.AccountCollection.where("username", "==", trimmedUsername)
+    .get()
+    .then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        // มีชื่อผู้ใช้งานนี้อยู่แล้ว
+        this.setState({
+          username: '',
+        });
+        Alert.alert(
+          "Username Exists",
+          "ชื่อผู้ใช้งานนี้ถูกใช้ไปแล้ว โปรดใช้ชื่อผู้ใช้งานอื่น"
+        );
+      } else {
+        this.AccountCollection //เพิ่มข้อมูลลง firebase
+        .add({
+          username: trimmedUsername,
+          email: trimmedEmail,
+          password: hashedPassword,
+        })
+        .then((docRef) => {
+          const docKey = docRef.id;
+          console.log(docKey);
+          this.setState({
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: ''
+          });
+          this.props.navigation.navigate("ข้อมูลส่วนตัว", { key: docKey });
+          Alert.alert(
+            "Registered",
+            "กรุณากรอกข้อมูลส่วนตัว"
+          );
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error checking username:", error);
+    });
 
 
-    // if (!this.state.username || !this.state.email || !this.state.password || !this.state.confirmPassword) {
-    //   Alert.alert(
-    //     "Missing Information",
-    //     "กรุณากรอกข้อมูลให้ครบทุกช่อง"
-    //   );
-    //   return;
-    // }
-
-    // if (this.state.password !== this.state.confirmPassword) {
-    //   this.setState({
-    //     password: '',
-    //     confirmPassword: ''
-    //   });
-    //   Alert.alert(
-    //     "Password Mismatch",
-    //     "รหัสผ่านต้องเหมือนกัน"
-    //   );
-    //   return;
-    // }
-
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(this.state.email)) {
-    //   Alert.alert(
-    //     "Invalid Email",
-    //     "โปรดป้อนอีเมลให้ถูกต้อง"
-    //   );
-    //   return;
-    // }
-    
-    // const trimmedUsername = this.state.username.trim(); // ตัดช่องว่างด้านหน้าและด้านหลังของชื่อผู้ใช้
-    // const trimmedEmail = this.state.email.trim(); // ตัดช่องว่างด้านหน้าและด้านหลังของอีเมล
-
-    // const salt = bcrypt.genSaltSync(10);
-    // const hashedPassword = bcrypt.hashSync(this.state.username+this.state.password, salt)
-
-
-    // this.AccountCollection //เพิ่มข้อมูลลง firebase
-    //   .add({
-    //     username: trimmedUsername,
-    //     email: trimmedEmail,
-    //     password: hashedPassword,
-    //   })
-    //   .then((res) => {
-    //     this.setState({
-    //       username: '',
-    //       email: '',
-    //       password: '',
-    //       confirmPassword: ''
-    //     });
-    //     this.props.navigation.navigate("ข้อมูลส่วนตัว");
-    //     Alert.alert(
-    //       "Adding Account",
-    //       "New Account was added!"
-    //     );
-    //   });
   }
   render() {
     return (

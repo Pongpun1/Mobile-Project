@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {Component, useState} from "react";
 import {
   StyleSheet,
   Text,
@@ -7,13 +7,77 @@ import {
   TouchableOpacity,
   Pressable,
   Platform,
+  Alert
 } from "react-native";
+import firebase from '../database/calcalDB';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const ProfileScreen = ({ navigation }) => {
+class ProfileScreen extends Component {
+  constructor(props){
+    super(props);
 
-  const formatDate = (rawDate) =>{
+    this.AccountCollection = firebase.firestore().collection("accounts");
+
+    this.state = {
+      gender: '',
+      birthday: '',
+      weight: '',
+      height: '',
+      activity: '',
+      date: new Date(),
+      showPicker: false
+    };
+  }
+  componentDidMount() {
+    const { route } = this.props;
+    const { key } = route.params;
+    this.setState({
+      gender: '',
+      birthday: '',
+      weight: '',
+      height: '',
+      activity: '',
+      date: new Date(),
+      showPicker: false
+    });
+    const userDoc = firebase
+          .firestore()
+          .collection("accounts")
+          .doc(key);
+        userDoc.get().then((res) => {
+          if (res.exists) {
+            const user = res.data();
+            this.setState({
+              key: res.id,
+              gender: user.gender,
+              birthday: user.birthday,
+              weight: user.weight,
+              height: user.height,
+              activity: user.activity,
+            });
+          } else {
+            console.log("Document does not exist!!");
+          }
+        });
+  }
+  inputValueUpdate = (val, prop) => {
+    const state = this.state;
+    state[prop] = val;
+    this.setState(state);
+  }
+  calculateAge = (birthday) => {
+    const birthDate = new Date(birthday);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const month = today.getMonth() - birthDate.getMonth();
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  formatDate = (rawDate) =>{
     let date = new Date(rawDate);
     let year = date.getFullYear();
     let month = date.getMonth()+1;
@@ -21,106 +85,133 @@ const ProfileScreen = ({ navigation }) => {
     return `${day}/${month}/${year}`;
   }
 
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [date, setDate] = useState(new Date())
-  const [showPicker, setShowPicker] = useState(false);
-  const toggleDatePicker = () =>{
-    setShowPicker(!showPicker);
+   toggleDatePicker = () =>{
+    this.inputValueUpdate(!this.state.showPicker, "showPicker")
   }
-  const ChangeDate = ({type}, selectedDate) =>{
+   ChangeDate = ({type}, selectedDate) =>{
+    console.log(type)
     if (type == "set"){
       const currentDate = selectedDate;
-      setDate(currentDate);
+      this.inputValueUpdate(currentDate, "date")
       if(Platform.OS == "android"){
-        toggleDatePicker()
-        setDateOfBirth(formatDate(currentDate));
+        this.toggleDatePicker()
+        this.inputValueUpdate(this.formatDate(currentDate), "birthday")
       }
     } else{
-      toggleDatePicker()
+        this.toggleDatePicker()
     }
   }
-
-  const [Activity, setActivity] = useState("");
-  const onValueChange = (itemValue) => {
-    setActivity(itemValue);
-  };
-
-  const [Gender, setGender] = useState("");
-  const onGenderValueChange = (itemValue) => {
-    setGender(itemValue);
-  };
-
-
-
-  return (
-    <>
+  update(){
+    console.log(this.calculateAge(this.state.date))
+    const updateDoc = this.AccountCollection
+      .doc(this.state.key);
+    updateDoc
+      .update({
+        gender: this.state.gender,
+        birthday: this.state.birthday,
+        weight: this.state.weight,
+        height: this.state.height,
+        activity: this.state.activity,
+        age: this.calculateAge(this.state.date)
+      })
+      .then(() => {
+        Alert.alert(
+          "Updating Alert",
+          "อัพเดทข้อมูลของคุณแล้ว"
+        );
+      });
+  }
+  render() {
+    return(
       <View style={styles.container}>
         <Text style={styles.HeadText}>ข้อมูลส่วนตัว</Text>
         <View>
 
           <Text style={styles.Text}>เพศ</Text>
           <Picker
-            selectedValue={Gender}
-            onValueChange={onGenderValueChange}
+            selectedValue={this.state.gender}
+            onValueChange={(val) => this.inputValueUpdate(val, "gender")}
             style={styles.dropdown}
           >
             <Picker.Item label="ระบุเพศ" value="0" />
-            <Picker.Item label="ชาย" value="1" />
-            <Picker.Item label="หญิง" value="2" />
-            <Picker.Item label="ไม่ระบุ" value="3" />
+            <Picker.Item label="ชาย" value="ชาย" />
+            <Picker.Item label="หญิง" value="หญิง" />
+            <Picker.Item label="ไม่ระบุ" value="ไม่ระบุ" />
           </Picker>
 
           <Text style={styles.Text}>วันเกิด</Text>
-          {showPicker &&(
+          {this.state.showPicker &&(
             <DateTimePicker
             mode="date"
             display="spinner"
-            value={date}
-            onChange={ChangeDate}
+            value={this.state.date}
+            onChange={this.ChangeDate}
             maximumDate={new Date()}
-          />
+            />
           )}
-          <Pressable onPress={toggleDatePicker}>
+          {/* ปุ่มวันเลือกวันFake */}
+          {this.state.showPicker &&(
+          <Pressable>
             <TextInput 
               style={[styles.input, { color: '#000000' }]}
               placeholder="ระบุวันเกิด"
-              value={dateOfBirth}
-              onChangeText={setDateOfBirth}
+              value={this.state.birthday}
+              onChangeText={(val) => this.inputValueUpdate(val, "birthday")}
               editable={false}
             />
           </Pressable>
-       
+          )}
+          {/* ปุ่มวันเลือกวันจริง */}
+          {!this.state.showPicker &&(
+          <Pressable onPress={this.toggleDatePicker}>
+            <TextInput 
+              style={[styles.input, { color: '#000000' }]}
+              placeholder="ระบุวันเกิด"
+              value={this.state.birthday}
+              onChangeText={(val) => this.inputValueUpdate(val, "birthday")}
+              editable={false}
+            />
+          </Pressable>
+          )}
           <Text style={styles.Text}>น้ำหนัก (กิโลกรัม)</Text>
           <TextInput
           style={styles.input}
           keyboardType="numeric"
+          value={this.state.weight}
+          onChangeText={(val) => this.inputValueUpdate(val, "weight")}
           />
           <Text style={styles.Text}>ส่วนสูง (เซนติเมตร)</Text>
           <TextInput
           style={styles.input}
           keyboardType="numeric"
+          value={this.state.height}
+          onChangeText={(val) => this.inputValueUpdate(val, "height")}
           />
 
           <Text style={styles.Text}>การออกกำลังกาย</Text>
           <Picker
-            selectedValue={Activity}
-            onValueChange={onValueChange}
+            selectedValue={this.state.activity}
+            onValueChange={(val) => this.inputValueUpdate(val, "activity")}
             style={styles.dropdown}
           >
             <Picker.Item label="เลือกพฤติกรรมการออกกำลังกาย" value="0" />
-            <Picker.Item label="ไม่เคยออกกำลังกาย" value="1" />
-            <Picker.Item label="ออกกำลังกายเป็นบางครั้ง" value="2" />
-            <Picker.Item label="ออกกำลังกายเป็นประจำ" value="3" />
+            <Picker.Item label="ไม่เคยออกกำลังกาย" value="ไม่เคยออกกำลังกาย" />
+            <Picker.Item label="ออกกำลังกายเป็นบางครั้ง" value="ออกกำลังกายเป็นบางครั้ง" />
+            <Picker.Item label="ออกกำลังกายเป็นประจำ" value="ออกกำลังกายเป็นประจำ" />
           </Picker>
 
         </View>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.update()}
+          >
           <Text style={styles.buttonText}>บันทึก</Text>
         </TouchableOpacity>
       </View>
-    </>
-  );
-};
+    )
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
