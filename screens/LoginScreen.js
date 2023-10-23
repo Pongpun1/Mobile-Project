@@ -47,8 +47,9 @@ class LoginScreen extends Component {
         }
         querySnapshot.forEach((doc) => {
           const userData = doc.data();
+          const userId = doc.id;
           if(bcrypt.compareSync(this.state.username+this.state.password, userData.password)){
-            console.log("yes")
+            this.props.navigation.navigate("หน้าหลักใช้งาน", {key: userId});
           }else{
             Alert.alert('Login Failed', 'ไม่พบผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
           }

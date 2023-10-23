@@ -1,9 +1,10 @@
 import React from 'react';
+import {Text} from 'react-native';
 
 const MenuScreen = ({navigation}) => {
   return (
     <>
-    Menu
+    <Text>Menu</Text>
     </>
   );
 }

@@ -1,9 +1,11 @@
 import React from 'react';
+import {Text} from 'react-native';
 
 const BMIscreen = ({navigation}) => {
   return (
     <>
-    BMI
+    <Text>BMI</Text>
+    
     </>
   );
 }

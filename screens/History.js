@@ -1,9 +1,11 @@
 import React from 'react';
+import {Text} from 'react-native';
 
 const HistoryScreen = ({navigation}) => {
   return (
     <>
-    History
+    <Text>History</Text>
+    
     </>
   );
 }
