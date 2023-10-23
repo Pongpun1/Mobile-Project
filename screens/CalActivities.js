@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { black } from "color-name";
 
 const CalActivities = ({ navigation }) => {
   const [menu, setmenu] = useState("");
@@ -44,7 +45,7 @@ const CalActivities = ({ navigation }) => {
       <View style={styles.headerContainer}>
         <Text style={styles.headText}>รายการกิจกรรม</Text>
       </View>
-      <View style={styles.inputContainer}>
+      <View style={styles.searchInputContainer}>
         <Ionicons
           name="ios-search"
           size={24}
@@ -59,7 +60,7 @@ const CalActivities = ({ navigation }) => {
           onChangeText={inputValueUpdate}
         />
       </View>
-      <View style={styles.container2}>
+      <View style={styles.listContainer}>
         <View style={styles.foodHeadItem}>
           <Text style={styles.text}>รายการกิจกรรม</Text>
           <Text style={styles.text}>kcal</Text>
@@ -74,6 +75,32 @@ const CalActivities = ({ navigation }) => {
             </View>
           )}
         />
+      </View>
+      <View style={styles.addContainer}>
+        <Text style={styles.headText}>เพิ่มกิจกรรมด้วยตัวเอง</Text>
+        <View style={styles.inputContainer2}>
+          <TextInput
+            style={styles.input}
+            iconName="ios-search"
+            placeholder="รายการกิจกรรม"
+            value={menu}
+            onChangeText={inputValueUpdate}
+          />
+          <TextInput
+            style={styles.input}
+            iconName="ios-search"
+            placeholder="รายการกิจกรรม"
+            value={menu}
+            onChangeText={inputValueUpdate}
+          />
+          <TextInput
+            style={styles.input}
+            iconName="ios-search"
+            placeholder="รายการกิจกรรม"
+            value={menu}
+            onChangeText={inputValueUpdate}
+          />
+        </View>
       </View>
     </View>
   );
@@ -96,10 +123,18 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 30,
   },
-  container2: {
+  listContainer: {
     alignItems: "center",
     width: "90%",
     flex: 1,
+  },
+  addContainer: {
+    backgroundColor: "gray",
+    alignItems: "center",
+    width: "90%",
+    flex: 0.4,
+    justifyContent: "flex-end",
+    margin: 50,
   },
   text: {
     fontWeight: "bold",
@@ -119,7 +154,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "lightgray",
   },
-  inputContainer: {
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+    margin: 10,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    paddingLeft: 10,
+  },
+  inputContainer2: {
     flexDirection: "row",
     alignItems: "center",
     width: "80%",
