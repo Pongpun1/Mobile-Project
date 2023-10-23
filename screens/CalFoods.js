@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, FlatList, TextInput } from "react-native";
 
 const AllCal = ({ navigation }) => {
   const [menu, setmenu] = useState("");
@@ -43,9 +36,6 @@ const AllCal = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headText}>รายการอาหาร</Text>
-        <TouchableOpacity style={styles.iconContainer}>
-          <Ionicons name="ios-add" size={32} color="#71B2FF" />
-        </TouchableOpacity>
       </View>
       <View style={styles.inputContainer}>
         <Ionicons
@@ -79,43 +69,6 @@ const AllCal = ({ navigation }) => {
           )}
         />
       </View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headText}>รายการอาหาร</Text>
-        <TouchableOpacity style={styles.iconContainer}>
-          <Ionicons name="ios-add" size={32} color="#71B2FF" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.inputContainer}>
-        <Ionicons
-          name="ios-search"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          style={styles.input}
-          iconName="ios-search"
-          placeholder="รายการอาหาร"
-          value={menu}
-          onChangeText={inputValueUpdate}
-        />
-      </View>
-      <View style={styles.container2}>
-        <View style={styles.foodHeadItem}>
-          <Text style={styles.text}>รายการกิจกรรม</Text>
-          <Text style={styles.text}>kcal</Text>
-        </View>
-        <FlatList
-          data={menuData}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.foodItem}>
-              <Text style={styles.text}>{item.name}</Text>
-              <Text style={styles.text}>{item.calories} kcal</Text>
-            </View>
-          )}
-        />
-      </View>
     </View>
   );
 };
@@ -131,9 +84,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "90%",
     margin: 10,
-  },
-  iconContainer: {
-    marginTop: 30,
   },
   headText: {
     fontWeight: "bold",
