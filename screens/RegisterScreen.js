@@ -29,8 +29,7 @@ class RegisterScreen extends Component {
   }
 
   store() {
-    // this.props.navigation.navigate("ข้อมูลส่วนตัว",{key:"Z4HNI9AMbdVA8piXkJQE"});
-    //กรุณากรอกข้อมูลให้ครบทุกช่อง
+    // this.props.navigation.navigate("หน้าหลักใช้งาน", { screen: "ข้อมูลส่วนตัว", params: { key: "xvK6T4sDO2AB5ldcKBSa" } });
     if (!this.state.username || !this.state.email || !this.state.password || !this.state.confirmPassword) {
       Alert.alert(
         "Missing Information",
@@ -96,7 +95,7 @@ class RegisterScreen extends Component {
             password: '',
             confirmPassword: ''
           });
-          this.props.navigation.navigate("ข้อมูลส่วนตัว", { key: docKey });
+          this.props.navigation.navigate("หน้าหลักใช้งาน", { screen: "ข้อมูลส่วนตัว", params: { key: docKey } });
           Alert.alert(
             "Registered",
             "กรุณากรอกข้อมูลส่วนตัว"
@@ -162,6 +161,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
+      backgroundColor: "white",
     },
     container2: {
         flex: 1,

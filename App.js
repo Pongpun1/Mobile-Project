@@ -2,12 +2,24 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MyNavigator from "./navigation/MyNavigator";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+import userReducer from "./store/reducers/userReducer";
 
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
+
+const rootReducer = combineReducers({
+  account: userReducer,
+ });
+ const store = createStore(rootReducer);
+ 
 
 export default function App() {
   return (
-    <MyNavigator />
+    <Provider store={store}>
+      <MyNavigator />
+    </Provider>
+    
     
  // <NavigationContainer>
     //   <Stack.Navigator

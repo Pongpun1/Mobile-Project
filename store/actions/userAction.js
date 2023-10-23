@@ -6,3 +6,12 @@ export const userData = (id) => {
     userID: id
   }
 }
+
+
+export const CLEAR_DATA = 'CLEAR_DATA';
+// action creators
+export const clearData = () => {
+  return {
+    type: CLEAR_DATA
+  };
+};
