@@ -47,7 +47,7 @@ const AllCal = ({ navigation }) => {
           <Ionicons name="ios-add" size={32} color="#71B2FF" />
         </TouchableOpacity>
       </View>
-      <View style={styles.inputContainer}>
+      <View style={styles.searchInputContainer}>
         <Ionicons
           name="ios-search"
           size={24}
@@ -63,7 +63,7 @@ const AllCal = ({ navigation }) => {
         />
       </View>
 
-      <View style={styles.container2}>
+      <View style={styles.listContainer}>
         <View style={styles.foodHeadItem}>
           <Text style={styles.text}>รายการอาหาร</Text>
           <Text style={styles.text}>kcal</Text>
@@ -85,7 +85,7 @@ const AllCal = ({ navigation }) => {
           <Ionicons name="ios-add" size={32} color="#71B2FF" />
         </TouchableOpacity>
       </View>
-      <View style={styles.inputContainer}>
+      <View style={styles.searchInputContainer}>
         <Ionicons
           name="ios-search"
           size={24}
@@ -100,7 +100,7 @@ const AllCal = ({ navigation }) => {
           onChangeText={inputValueUpdate}
         />
       </View>
-      <View style={styles.container2}>
+      <View style={styles.listContainer}>
         <View style={styles.foodHeadItem}>
           <Text style={styles.text}>รายการกิจกรรม</Text>
           <Text style={styles.text}>kcal</Text>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 30,
   },
-  container2: {
+  listContainer: {
     alignItems: "center",
     width: "90%",
     flex: 1,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "lightgray",
   },
-  inputContainer: {
+  searchInputContainer: {
     flexDirection: "row",
     alignItems: "center",
     width: "80%",
