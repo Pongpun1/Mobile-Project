@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View, FlatList, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 
-const CalFoods = ({ navigation }) => {
+const CalActivities = ({ navigation }) => {
   const [menu, setmenu] = useState("");
   const inputValueUpdate = (val) => {
     setmenu(val); // Update the menu state
@@ -35,7 +42,7 @@ const CalFoods = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headText}>รายการอาหาร</Text>
+        <Text style={styles.headText}>รายการกิจกรรม</Text>
       </View>
       <View style={styles.inputContainer}>
         <Ionicons
@@ -47,15 +54,14 @@ const CalFoods = ({ navigation }) => {
         <TextInput
           style={styles.input}
           iconName="ios-search"
-          placeholder="รายการอาหาร"
+          placeholder="รายการกิจกรรม"
           value={menu}
           onChangeText={inputValueUpdate}
         />
       </View>
-
       <View style={styles.container2}>
         <View style={styles.foodHeadItem}>
-          <Text style={styles.text}>รายการอาหาร</Text>
+          <Text style={styles.text}>รายการกิจกรรม</Text>
           <Text style={styles.text}>kcal</Text>
         </View>
         <FlatList
@@ -136,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CalFoods;
+export default CalActivities;
