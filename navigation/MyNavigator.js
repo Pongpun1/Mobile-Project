@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from "@react-navigation/drawer";
-
+import { useSelector, useDispatch } from "react-redux";
 
 import MainScreen from "../screens/Main";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -35,12 +35,12 @@ function Login(){
           headerTintColor: "black",
           headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
         }}
-      >
+        >
         <Stack.Screen
           options={{ headerShown: false }} name="เข้าสู่ระบบ" component={LoginScreen}/>
         <Stack.Screen name="สมัครสมาชิก" component={RegisterScreen} />
         <Stack.Screen name="ข้อมูลส่วนตัว" component={ProfileScreen} />
-        <Stack.Screen options={{ headerShown: false }} name="แคลอรี่วันนี้" component={DrawerNavigator}/>
+        <Stack.Screen options={{ headerShown: false }} name="หน้าหลักใช้งาน" component={DrawerNavigator}/>
     </Stack.Navigator>
   )
 }
@@ -65,13 +65,13 @@ function DrawerNavigator() {
 
         }} />
 
-        <Drawer.Screen name="ข้อมูลส่วนตัว" component={ProfileNavi}
+        <Drawer.Screen name="ข้อมูลส่วนตัว" component={ProfileScreen}
         options={{
           drawerLabel: "แก้ไขข้อมูลส่วนตัว",
           drawerIcon: ({ color }) => { return <FontAwesome5 name="user-edit" size={35} color="black" />; },
         }} />
 
-        <Drawer.Screen name="ข้อมูลบัญชี" component={AccNavi}
+        <Drawer.Screen name="ข้อมูลบัญชี" component={AccountScreen}
         options={{
           drawerLabel: "แก้ไขข้อมูลบัญชี",
           drawerIcon: ({ color }) => { return <Ionicons name="md-key-outline" size={40} color="black" />; },
@@ -86,23 +86,23 @@ function DrawerNavigator() {
       </Drawer.Navigator>
   );
 }
-function ProfileNavi() {
-  return (
-    <Stack.Navigator 
-    screenOptions={{headerStyle: {backgroundColor: "#4a148c"}, headerTintColor: "white"}}>
-      <Stack.Screen options={{ headerShown: false }} name="ข้อมูลส่วนตัว" component={ProfileScreen} />
-    </Stack.Navigator>
-  )
-}
+// function ProfileNavi() {
+//   return (
+//     <Stack.Navigator 
+//     screenOptions={{headerStyle: {backgroundColor: "#4a148c"}, headerTintColor: "white"}}>
+//       <Stack.Screen options={{ headerShown: false }} name="ข้อมูลส่วนตัว" component={ProfileScreen} />
+//     </Stack.Navigator>
+//   )
+// }
 
-function AccNavi() {
-  return (
-    <Stack.Navigator 
-    screenOptions={{headerStyle: {backgroundColor: "#4a148c"}, headerTintColor: "white"}}>
-      <Stack.Screen options={{ headerShown: false }} name="ข้อมูลบัญชีของคุณ" component={AccountScreen} />
-    </Stack.Navigator>
-  )
-}
+// function AccNavi() {
+//   return (
+//     <Stack.Navigator 
+//     screenOptions={{headerStyle: {backgroundColor: "#4a148c"}, headerTintColor: "white"}}>
+//       <Stack.Screen options={{ headerShown: false }} name="ข้อมูลบัญชีของคุณ" component={AccountScreen} />
+//     </Stack.Navigator>
+//   )
+// }
 
 
 
@@ -123,7 +123,7 @@ function MainTabNavi() {
       <Tab.Screen  name="รายการแคลอรี่" component={MenuScreenNavi} options={{headerShown: false,tabBarIcon: () => {
         return <MaterialIcons name="restaurant-menu" size={45} color="black" />}
       }}/>
-      <Tab.Screen  name="ดัชนีมวลกาย" component={BMIScreenNavi} options={{headerShown: false,tabBarIcon: () => {
+      <Tab.Screen  name="ดัชนีมวลกาย" component={BMIscreen} options={{headerShown: false,tabBarIcon: () => {
         return <FontAwesome5 name="weight" size={40} color="black" />}
       }}/>
       <Tab.Screen  name="ประวัติ" component={HistoryScreenNavi} options={{headerShown: false,tabBarIcon: () => {
@@ -139,7 +139,7 @@ function MainScreenNavi() {
       headerTintColor: "black",
       headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
     }}>
-        <Stack.Screen options={{ headerShown: false }} name="แคลอรี่วันนี้" component={MainScreen}/>
+        <Stack.Screen options={{ headerShown: false }} name="Stackแคลอรี่วันนี้" component={MainScreen}/>
     </Stack.Navigator>
   )
 }
@@ -150,21 +150,21 @@ function MenuScreenNavi(){
       headerTintColor: "black",
       headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
     }}>
-      <Stack.Screen options={{ headerShown: false }} name="รายการแคลอรี่" component={MenuScreen}/>
+      <Stack.Screen options={{ headerShown: false }} name="Stackรายการแคลอรี่" component={MenuScreen}/>
     </Stack.Navigator>
   )
 }
-function BMIScreenNavi(){
-  return(
-    <Stack.Navigator  screenOptions={{
-      headerStyle: { backgroundColor: "#71B2FF" },
-      headerTintColor: "black",
-      headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
-    }}>
-      <Stack.Screen options={{ headerShown: false }} name="ดัชนีมวลกาย" component={BMIscreen}/>
-    </Stack.Navigator>
-  )
-}
+// function BMIScreenNavi(){
+//   return(
+//     <Stack.Navigator  screenOptions={{
+//       headerStyle: { backgroundColor: "#71B2FF" },
+//       headerTintColor: "black",
+//       headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
+//     }}>
+//       <Stack.Screen options={{ headerShown: false }} name="ดัชนีมวลกาย" component={BMIscreen}/>
+//     </Stack.Navigator>
+//   )
+// }
 function HistoryScreenNavi(){
   return(
     <Stack.Navigator  screenOptions={{
@@ -172,7 +172,7 @@ function HistoryScreenNavi(){
       headerTintColor: "black",
       headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
     }}>
-      <Stack.Screen options={{ headerShown: false }} name="ประวัติ" component={HistoryScreen}/>
+      <Stack.Screen options={{ headerShown: false }} name="Stackประวัติ" component={HistoryScreen}/>
     </Stack.Navigator>
   )
 }

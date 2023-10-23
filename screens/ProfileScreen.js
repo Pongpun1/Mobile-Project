@@ -11,7 +11,9 @@ import {
 } from "react-native";
 import firebase from '../database/calcalDB';
 import {Picker} from '@react-native-picker/picker';
+import { useSelector, useDispatch } from "react-redux";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { userData } from "../store/actions/userAction";
 
 class ProfileScreen extends Component {
   constructor(props){
@@ -115,6 +117,9 @@ class ProfileScreen extends Component {
         age: this.calculateAge(this.state.date)
       })
       .then(() => {
+        this.props.navigation.navigate("หน้าหลักใช้งาน", {key: this.state.key});
+        const dispatch = useDispatch() 
+        dispatch(userData(this.state.key));
         Alert.alert(
           "Updating Alert",
           "อัพเดทข้อมูลของคุณแล้ว"
