@@ -11,8 +11,13 @@ import {
 
 const AllCal = ({ navigation }) => {
   const [menu, setmenu] = useState("");
-  const inputValueUpdate = (val) => {
-    setmenu(val); // Update the menu state
+  const [activity, setactivity] = useState("");
+
+  const inputValueMenuUpdate = (val) => {
+    setmenu(val); // Update the name state
+  };
+  const inputValueActivityUpdate = (val) => {
+    setactivity(val); // Update the name state
   };
 
   const menuData = [
@@ -59,7 +64,7 @@ const AllCal = ({ navigation }) => {
           iconName="ios-search"
           placeholder="รายการอาหาร"
           value={menu}
-          onChangeText={inputValueUpdate}
+          onChangeText={inputValueMenuUpdate}
         />
       </View>
 
@@ -96,8 +101,8 @@ const AllCal = ({ navigation }) => {
           style={styles.input}
           iconName="ios-search"
           placeholder="รายการอาหาร"
-          value={menu}
-          onChangeText={inputValueUpdate}
+          value={activity}
+          onChangeText={inputValueActivityUpdate}
         />
       </View>
       <View style={styles.listContainer}>
