@@ -1,13 +1,51 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import firebase from '../database/calcalDB';
+import { useSelector, useDispatch} from "react-redux";
+import { userData, clearData } from "../store/actions/userAction";
 
-const BMIscreen = ({ navigation }) => {
+const BMIscreen = ({route, navigation}) => {
+  const key = useSelector(state => state.account.key);
+  const [state, setState] = useState({
+    bmi: "0"
+  });
+
+  const fetchUserData = useCallback(() => {
+    const userDoc = firebase
+      .firestore()
+      .collection("accounts")
+      .doc(key);
+    userDoc.get().then((res) => {
+      if (res.exists) {
+        const user = res.data();
+        setState(prevState => ({
+          ...prevState,
+          key: res.id,
+          bmi: user.BMI,
+        }));
+      } else {
+        console.log("Document does not exist!!");
+      }
+    });
+  }, [key]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchUserData();
+    });
+    return unsubscribe;
+  }, [navigation, fetchUserData]);
+  
   return (
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
       <View style={{alignItems: "center",justifyContent: "center",}}>
         <Text style={styles.HeadText}>ค่าดัชนีมวลกายอยู่ที่</Text>
-        <Text style={styles.BMItext}>21.8</Text>
+        <Text style={styles.BMItext}>{state.bmi}</Text>
       </View>
         
       </View>

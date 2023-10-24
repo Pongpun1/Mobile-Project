@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import firebase from '../database/calcalDB';
 import {Picker} from '@react-native-picker/picker';
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector, useDispatch} from "react-redux";
 import { userData, clearData } from "../store/actions/userAction";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -64,14 +64,8 @@ const ProfileScreen = ({route, navigation}) =>{
     const unsubscribe = navigation.addListener('focus', () => {
       fetchUserData();
     });
-
     return unsubscribe;
   }, [navigation, fetchUserData]);
-
-  
-  useEffect(() => {
-
-  }, []);
 
   const inputValueUpdate = (val, prop) => {
     setState(prevState => ({
@@ -79,6 +73,7 @@ const ProfileScreen = ({route, navigation}) =>{
       [prop]: val
     }));
   }
+
   const calculateAge = (birthday) => {
     const birthDate = new Date(birthday);
     const today = new Date();
