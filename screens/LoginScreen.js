@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import firebase from '../database/calcalDB';
 import bcrypt from 'react-native-bcrypt';
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector, useDispatch} from "react-redux";
 import { userData, clearData } from "../store/actions/userAction";
 const LoginScreen = ({route, navigation}) =>{
   const dispatch = useDispatch();
@@ -52,7 +52,6 @@ const LoginScreen = ({route, navigation}) =>{
         querySnapshot.forEach((doc) => {
           const userData = doc.data();
           const userId = doc.id;
-          
           if(bcrypt.compareSync(state.username+state.password, userData.password)){
             handleLogin(userId);
           }else{

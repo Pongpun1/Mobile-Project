@@ -14,7 +14,7 @@ const BMIscreen = ({ navigation }) => {
       <View style={styles.content}>
 
         <View style={styles.box}>
-          <Image style={styles.stretch} source={require("/assets/thin.png")} />
+          {/* <Image style={styles.stretch} source={require("/assets/thin.png")} /> */}
           <View style={{flexDirection: 'column'}}>
           <Text style={styles.Text}>ระดับ BMI ต่ำกว่า 18.5</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ ต่ำกว่ามาตรฐาน</Text>
@@ -26,7 +26,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-          <Image style={styles.stretch} source={require("/assets/normal.png")}/>
+          {/* <Image style={styles.stretch} source={require("/assets/normal.png")}/> */}
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI อยู่ในช่วง 18.5 - 22.9</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ น้ำหนักสมส่วน</Text>
@@ -37,7 +37,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-            <Image style={styles.stretch} source={require("/assets/fat1.png")} />
+            {/* <Image style={styles.stretch} source={require("/assets/fat1.png")} /> */}
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI อยู่ในช่วง 23.0 - 24.9</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ น้ำหนักเกินมาตรฐาน</Text>
@@ -48,7 +48,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-          <Image style={styles.stretch2} source={require("/assets/fat2.png")} />
+          {/* <Image style={styles.stretch2} source={require("/assets/fat2.png")} /> */}
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI อยู่ในช่วง 25.0 - 29.9</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ อ้วน</Text>
@@ -59,7 +59,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-          <Image style={styles.stretch} source={require("/assets/fat3.png")} />
+          {/* <Image style={styles.stretch} source={require("/assets/fat3.png")} /> */}
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI มากกว่า 30.0</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ อ้วนมาก</Text>

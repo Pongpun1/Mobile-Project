@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -18,31 +18,20 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 const ProfileScreen = ({route, navigation}) =>{
   const AccountCollection = firebase.firestore().collection("accounts");
-  const { key } = route.params;
-  // const key = useSelector(state => state.account.key);
+  // const { key } = route.params;
+  const key = useSelector(state => state.account.key);
   const [state, setState] = useState({
     gender: '',
     birthday: '',
     weight: '',
     height: '',
     activity: '',
-    tdee: 0,
+    tdee: '0',
     date: new Date(),
     showPicker: false
   });
-  
-  useEffect(() => {
-    setState(prevState => ({
-      ...prevState,
-      gender: '',
-      birthday: '',
-      weight: '',
-      height: '',
-      activity: '',
-      tdee: '0',
-      date: new Date(),
-      showPicker: false
-    }));
+
+  const fetchUserData = useCallback(() => {
     const userDoc = firebase
       .firestore()
       .collection("accounts")
@@ -65,6 +54,23 @@ const ProfileScreen = ({route, navigation}) =>{
         console.log("Document does not exist!!");
       }
     });
+  }, [key]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation, fetchUserData]);
+
+  
+  useEffect(() => {
+
   }, []);
 
   const inputValueUpdate = (val, prop) => {
@@ -108,6 +114,13 @@ const ProfileScreen = ({route, navigation}) =>{
     }
   };
 
+  const calculateBMI = () => {
+    const weight = state.weight;
+    const height = state.height/100;
+    let BMI = weight/(height*height);
+    return BMI.toFixed(1);
+  };
+
   const birthdayToDate = (birthday) =>{
     if(birthday){
       const parts = birthday.split('/'); // แยกวันที่ออกมาเป็นส่วนๆ
@@ -115,7 +128,7 @@ const ProfileScreen = ({route, navigation}) =>{
       const dateObject = new Date(parts[2], parts[1] - 1, parts[0]); // parts[2] คือปี, parts[1] คือเดือน, parts[0] คือวัน
       return dateObject;
     }else{
-      return new Date()
+      return new Date();
     }
     
   }
@@ -154,6 +167,13 @@ const ProfileScreen = ({route, navigation}) =>{
       );
       return;
     }
+    if (state.weight < 0 || state.height < 0) {
+      Alert.alert(
+        "Incorrect Information",
+        "กรุณากรอกข้อมูลให้ถูกต้อง"
+      );
+      return;
+    }
     const updateDoc = AccountCollection
       .doc(state.key);
     updateDoc
@@ -165,6 +185,7 @@ const ProfileScreen = ({route, navigation}) =>{
         activity: state.activity,
         age: calculateAge(state.date),
         TDEE: calculateTDEE(),
+        BMI: calculateBMI(),
       })
       .then(() => {
         navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: state.key } });
