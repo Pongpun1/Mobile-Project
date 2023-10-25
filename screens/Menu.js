@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch} from "react-redux";
+import { userKey, clearData } from "../store/actions/userAction";
 
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -12,9 +14,13 @@ import {
 } from "react-native";
 
 const MenuScreen = ({navigation}) => {
+  const foods = useSelector(state => state.account.foods);
+  const activitys = useSelector(state => state.account.activitys);
+
   const [state, setState] = useState({
     menu: '',
     activity: '',
+    filteredFoods: [],
   });
 
   const inputValueUpdate = (val, prop) => {
@@ -24,9 +30,14 @@ const MenuScreen = ({navigation}) => {
     }));
   }
 
+  const test = () => {
+    console.log(menuData)
+    console.log(foods)
+  };
+
   const menuData = [
-    { name: "ก๋วยเตี๋ยวเนื้อ", calories: 350 },
-    { name: "ผัดไทย", calories: 420 },
+    { name: "w", calories: 350 },
+    { name: "www", calories: 420 },
     { name: "สลัด", calories: 180 },
     { name: "พิซซ่า", calories: 700 },
     { name: "ไก่ทอด", calories: 450 },
@@ -53,7 +64,10 @@ const MenuScreen = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headText}>รายการอาหาร</Text>
-        <TouchableOpacity style={styles.iconContainer}>
+        <TouchableOpacity
+          style={styles.iconContainer}
+          onPress={() => test()}
+          >
           <Ionicons name="ios-add" size={32} color="#71B2FF" />
         </TouchableOpacity>
       </View>
@@ -70,24 +84,26 @@ const MenuScreen = ({navigation}) => {
           placeholder="ค้นหา"
           value={state.menu}
           onChangeText={(val) => {
-            inputValueUpdate(val, "menu")
+            inputValueUpdate(val, "menu");
+            const filteredFoods = foods.filter(food => food.name.toLowerCase().includes(val.toLowerCase()));
+            inputValueUpdate(filteredFoods, "filteredFoods")
           }}
         />
       </View>
 
       <View style={[styles.listContainer]}>
-        <View style={styles.foodHeadItem}>
+        <View style={styles.HeadItem}>
           <Text style={styles.text}>รายการอาหาร</Text>
-          <Text style={styles.text}>kcal</Text>
+          <Text style={styles.text}>ได้รับแคลอรี่</Text>
         </View>
         <FlatList
-          data={menuData}
+          data={state.filteredFoods}
           keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={true}
           renderItem={({ item }) => (
-            <View style={styles.foodItem}>
-              <Text style={styles.text}>{item.name}</Text>
-              <Text style={styles.text}>{item.calories} kcal</Text>
+            <View style={styles.listItem}>
+              <Text style={styles.text1}>{item.name}</Text>
+              <Text style={styles.text1}>{item.kcalories} kcal</Text>
             </View>
           )}
         />
@@ -116,18 +132,18 @@ const MenuScreen = ({navigation}) => {
         />
       </View>
       <View style={[styles.listContainer, {marginBottom: '10%'}]}>
-        <View style={styles.foodHeadItem}>
+        <View style={styles.HeadItem}>
           <Text style={styles.text}>รายการกิจกรรม</Text>
-          <Text style={styles.text}>kcal</Text>
+          <Text style={styles.text}>เผาผลาญแคลอรี่</Text>
         </View>
         <FlatList
-          data={menuData}
+          data={activitys}
           keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={true}
           renderItem={({ item }) => (
-            <View style={styles.foodItem}>
-              <Text style={styles.text}>{item.name}</Text>
-              <Text style={styles.text}>{item.calories} kcal</Text>
+            <View style={styles.listItem}>
+              <Text style={styles.text1}>{item.name}</Text>
+              <Text style={styles.text1}>{item.kcalories} kcal</Text>
             </View>
           )}
         />
@@ -146,9 +162,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: "80%",
+    width: 350,
     height: 30,
     marginTop: 25,
+  },
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 350,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    paddingLeft: 10,
+    margin: 15,
   },
   iconContainer: {
     marginTop: 0,
@@ -159,35 +184,32 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     alignItems: "center",
-    width: "90%",
+    width: 350,
     height: 250
   },
   text: {
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 17,
     padding: 7,
   },
-  foodHeadItem: {
+  text1: {
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 15,
+    padding: 7,
+  },
+  HeadItem: {
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
     backgroundColor: "#71B2FF",
   },
-  foodItem: {
+  listItem: {
     flexDirection: "row",
-    width: "82%",
     justifyContent: "space-between",
     backgroundColor: "lightgray",
-  },
-  searchInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-    backgroundColor: "#D9D9D9",
-    borderRadius: 10,
-    paddingLeft: 10,
-    margin: 15,
+    width: 350,
   },
   icon: {
     padding: 5,

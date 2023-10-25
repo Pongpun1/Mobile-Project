@@ -77,15 +77,13 @@ const MainScreen = ({ navigation }) => {
             fontWeight: "bold",
           }}
         />
-      </View>
-
-      <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headText}>รายการอาหาร</Text>
           <TouchableOpacity style={styles.iconContainer}>
           <Entypo name="plus" size={24} color="black" />
           </TouchableOpacity>
-        </View>
+        </View> 
 
         <View style={[styles.listContainer]}>
           <FlatList
@@ -112,6 +110,33 @@ const MainScreen = ({ navigation }) => {
         </View>
         
       </SafeAreaView>
+
+
+
+
+      </View>
+
+
+      {/* <View style={[styles.listContainer, {marginBottom: '10%'}]}>
+        <View style={styles.foodHeadItem}>
+          <Text style={styles.text}>รายการกิจกรรม</Text>
+          <Text style={styles.text}>kcal</Text>
+        </View>
+        <FlatList
+          data={menuData}
+          keyExtractor={(item, index) => index.toString()}
+          nestedScrollEnabled={true}
+          renderItem={({ item }) => (
+            <View style={styles.foodItem}>
+              <Text style={styles.text}>{item.name}</Text>
+              <Text style={styles.text}>{item.calories} kcal</Text>
+            </View>
+          )}
+        />
+      </View>
+       */}
+
+      
     </ScrollView>
   );
 };
@@ -146,7 +171,7 @@ const styles = StyleSheet.create({
   },
   headText: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 25,
   },
   listContainer: {
     alignItems: "center",
