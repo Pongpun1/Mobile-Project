@@ -69,6 +69,7 @@ const MainScreen = ({ navigation }) => {
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             barPercentage: 0.7,
           }}
+          showBarTops={false}
           withCustomBarColorFromData
           style={{
             marginVertical: 8,
