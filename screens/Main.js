@@ -51,7 +51,7 @@ const MainScreen = ({ navigation }) => {
           width={Dimensions.get("window").width * 0.9}
           height={220}
           chartConfig={{
-            backgroundGradientFrom: "#5BA6FF  ",
+            backgroundGradientFrom: "#5BA6FF",
             backgroundGradientTo: "#76B5FF",
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,

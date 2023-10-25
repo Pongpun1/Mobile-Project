@@ -9,7 +9,6 @@ import {
   View,
   FlatList,
   TextInput,
-  TouchableOpacity,
 } from "react-native";
 
 const CalFoods = ({ navigation }) => {

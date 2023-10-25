@@ -41,20 +41,53 @@ const BMIscreen = ({route, navigation}) => {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={{alignItems: "center",justifyContent: "center",}}>
-
-          {(state.bmi >= 18.5 && state.bmi <=22.9) && ( <Entypo name="emoji-happy" size={100} color="black"/>)}
-          {(state.bmi < 18.5 || (state.bmi >= 23 && state.bmi <=24.9)) && ( <Entypo name="emoji-neutral" size={100} color="black" />)}
-          {(state.bmi >= 24.9) && ( <Entypo name="emoji-sad" size={100} color="black"/>)}
-        
-          
-
-            
-            <Text style={styles.HeadText}>ค่าดัชนีมวลกายอยู่ที่</Text>
-          
+            <Text style={styles.HeadText}>BMI</Text>
             <Text style={styles.BMItext}>{state.bmi}</Text>
-          
           </View>
         </View>
+        <View style={styles.statusBox}>
+        {(state.bmi >= 18.5 && state.bmi <=22.9) && (         
+            <Entypo name="emoji-happy" size={100} color="black"/>   
+        )}
+        {(state.bmi < 18.5 || (state.bmi >= 23 && state.bmi <=24.9)) && (       
+            <Entypo name="emoji-neutral" size={100} color="black" />
+        )}
+        {(state.bmi >= 24.9) && (  
+            <Entypo name="emoji-sad" size={100} color="black"/>
+        )}
+
+        {(state.bmi < 18.5) && (     
+          <View> 
+            <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
+            <Text style={styles.statusText}>ต่ำกว่ามาตรฐาน</Text>
+          </View>
+        )}
+        {(state.bmi >= 18.5 && state.bmi <=22.9) && (     
+          <View> 
+            <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
+            <Text style={styles.statusText}>ปกติ</Text>
+          </View>
+        )}
+        {(state.bmi >= 23 && state.bmi <=24.9) && (     
+          <View> 
+            <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
+            <Text style={styles.statusText}>เกินมาตรฐาน</Text>
+          </View>
+        )}
+        {(state.bmi >= 25 && state.bmi <=29.9) && (     
+          <View> 
+            <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
+            <Text style={styles.statusText}>อ้วน</Text>
+          </View>
+        )}
+        {(state.bmi >= 30) && (     
+          <View> 
+            <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
+            <Text style={styles.statusText}>อ้วนมาก</Text>
+          </View>
+        )}
+        </View>
+        
 
         <View style={styles.content}>
 
@@ -129,6 +162,15 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginTop: 28,
   },
+  statusBox : {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  statusText : {
+    fontWeight: "bold",
+    fontSize: 35,
+  },
   BMItext : {
     fontWeight: "bold",
     fontSize: 75,
@@ -143,8 +185,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     marginBottom: 30,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
+    width: "100%",
   },
   stretch: {
     width: 120,
