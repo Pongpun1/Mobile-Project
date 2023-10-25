@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch} from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { userKey, clearData } from "../store/actions/userAction";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -13,32 +13,32 @@ import {
   ScrollView,
 } from "react-native";
 
-const MenuScreen = ({navigation}) => {
-  const foods = useSelector(state => state.account.foods);
-  const activitys = useSelector(state => state.account.activitys);
+const MenuScreen = ({ navigation }) => {
+  const foods = useSelector((state) => state.account.foods);
+  const activitys = useSelector((state) => state.account.activitys);
 
   const [state, setState] = useState({
-    menu: '',
-    activity: '',
+    menu: "",
+    activity: "",
     filteredFoods: [],
     filteredActivitys: [],
   });
 
   const inputValueUpdate = (val, prop) => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      [prop]: val
+      [prop]: val,
     }));
-  }
+  };
 
   useEffect(() => {
-    inputValueUpdate(foods, "filteredFoods")
-    inputValueUpdate(activitys, "filteredActivitys")
+    inputValueUpdate(foods, "filteredFoods");
+    inputValueUpdate(activitys, "filteredActivitys");
   }, []);
 
   const test = () => {
-    console.log(menuData)
-    console.log(foods)
+    console.log(menuData);
+    console.log(foods);
   };
 
   const menuData = [
@@ -67,96 +67,111 @@ const MenuScreen = ({navigation}) => {
 
   return (
     <ScrollView>
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headText}>รายการอาหาร</Text>
-        <TouchableOpacity
-          style={styles.iconContainer}
-          onPress={() => test()}
-          >
-          <Ionicons name="ios-add" size={32} color="#71B2FF" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.searchInputContainer}>
-        <Ionicons
-          name="ios-search"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          style={styles.input}
-          iconName="ios-search"
-          placeholder="ค้นหาอาหาร"
-          value={state.menu}
-          onChangeText={(val) => {
-            inputValueUpdate(val, "menu");
-            const filteredFoods = foods.filter(food => food.name.toLowerCase().includes(val.toLowerCase()));
-            inputValueUpdate(filteredFoods, "filteredFoods")
-          }}
-        />
-      </View>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headText}>รายการอาหาร</Text>
+          <TouchableOpacity style={styles.iconContainer} onPress={() => test()}>
+            <Ionicons
+              name="ios-add"
+              size={32}
+              color="#71B2FF"
+              onPress={() => {
+                navigation.navigate("เพิ่มรายการอาหาร");
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.searchInputContainer}>
+          <Ionicons
+            name="ios-search"
+            size={24}
+            color="gray"
+            style={styles.icon}
+          />
+          <TextInput
+            style={styles.input}
+            iconName="ios-search"
+            placeholder="ค้นหาอาหาร"
+            value={state.menu}
+            onChangeText={(val) => {
+              inputValueUpdate(val, "menu");
+              const filteredFoods = foods.filter((food) =>
+                food.name.toLowerCase().includes(val.toLowerCase())
+              );
+              inputValueUpdate(filteredFoods, "filteredFoods");
+            }}
+          />
+        </View>
 
-      <View style={[styles.listContainer]}>
-        <View style={styles.HeadItem}>
-          <Text style={styles.text}>รายการอาหาร</Text>
-          <Text style={styles.text}>ได้รับ Kcal</Text>
+        <View style={[styles.listContainer]}>
+          <View style={styles.HeadItem}>
+            <Text style={styles.text}>รายการอาหาร</Text>
+            <Text style={styles.text}>ได้รับ Kcal</Text>
+          </View>
+          <FlatList
+            data={state.filteredFoods}
+            keyExtractor={(item, index) => index.toString()}
+            nestedScrollEnabled={true}
+            renderItem={({ item }) => (
+              <View style={styles.listItem}>
+                <Text style={styles.text1}>{item.name}</Text>
+                <Text style={styles.text1}>{item.kcalories}</Text>
+              </View>
+            )}
+          />
         </View>
-        <FlatList
-          data={state.filteredFoods}
-          keyExtractor={(item, index) => index.toString()}
-          nestedScrollEnabled={true}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text style={styles.text1}>{item.name}</Text>
-              <Text style={styles.text1}>{item.kcalories}</Text>
-            </View>
-          )}
-        />
-      </View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headText}>รายการกิจกรรม</Text>
-        <TouchableOpacity style={styles.iconContainer}>
-          <Ionicons name="ios-add" size={32} color="#71B2FF" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.searchInputContainer}>
-        <Ionicons
-          name="ios-search"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          style={styles.input}
-          iconName="ios-search"
-          placeholder="ค้นหากิจกรรม"
-          value={state.activity}
-          onChangeText={(val) => {
-            inputValueUpdate(val, "activity");
-            const filteredActivitys = activitys.filter(activity => activity.name.toLowerCase().includes(val.toLowerCase()));
-            inputValueUpdate(filteredActivitys, "filteredActivitys")
-          }}
-        />
-      </View>
-      <View style={[styles.listContainer, {marginBottom: '10%'}]}>
-        <View style={styles.HeadItem}>
-          <Text style={styles.text}>รายการกิจกรรม</Text>
-          <Text style={styles.text}>เผาผลาญ Kcal</Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headText}>รายการกิจกรรม</Text>
+          <TouchableOpacity style={styles.iconContainer}>
+            <Ionicons
+              name="ios-add"
+              size={32}
+              color="#71B2FF"
+              onPress={() => {
+                navigation.navigate("เพิ่มรายการกิจกรรม");
+              }}
+            />
+          </TouchableOpacity>
         </View>
-        <FlatList
-          data={state.filteredActivitys}
-          keyExtractor={(item, index) => index.toString()}
-          nestedScrollEnabled={true}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text style={styles.text1}>{item.name}</Text>
-              <Text style={styles.text1}>{item.kcalories}</Text>
-            </View>
-          )}
-        />
+        <View style={styles.searchInputContainer}>
+          <Ionicons
+            name="ios-search"
+            size={24}
+            color="gray"
+            style={styles.icon}
+          />
+          <TextInput
+            style={styles.input}
+            iconName="ios-search"
+            placeholder="ค้นหากิจกรรม"
+            value={state.activity}
+            onChangeText={(val) => {
+              inputValueUpdate(val, "activity");
+              const filteredActivitys = activitys.filter((activity) =>
+                activity.name.toLowerCase().includes(val.toLowerCase())
+              );
+              inputValueUpdate(filteredActivitys, "filteredActivitys");
+            }}
+          />
+        </View>
+        <View style={[styles.listContainer, { marginBottom: "10%" }]}>
+          <View style={styles.HeadItem}>
+            <Text style={styles.text}>รายการกิจกรรม</Text>
+            <Text style={styles.text}>เผาผลาญ Kcal</Text>
+          </View>
+          <FlatList
+            data={state.filteredActivitys}
+            keyExtractor={(item, index) => index.toString()}
+            nestedScrollEnabled={true}
+            renderItem={({ item }) => (
+              <View style={styles.listItem}>
+                <Text style={styles.text1}>{item.name}</Text>
+                <Text style={styles.text1}>{item.kcalories}</Text>
+              </View>
+            )}
+          />
+        </View>
       </View>
-    </View>
     </ScrollView>
   );
 };
@@ -193,7 +208,7 @@ const styles = StyleSheet.create({
   listContainer: {
     alignItems: "center",
     width: 350,
-    height: 250
+    height: 250,
   },
   text: {
     fontWeight: "bold",
