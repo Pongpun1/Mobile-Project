@@ -36,7 +36,7 @@ const CalActivities = ({ navigation }) => {
   }, []);
 
   const test = () => {
-    console.log(menuData)
+    console.log(menuData);
   };
 
   const menuData = [
@@ -82,13 +82,15 @@ const CalActivities = ({ navigation }) => {
           value={state.activity}
           onChangeText={(val) => {
             inputValueUpdate(val, "activity");
-            const filteredActivitys = activitys.filter(activity => activity.name.toLowerCase().includes(val.toLowerCase()));
-            inputValueUpdate(filteredActivitys, "filteredActivitys")
+            const filteredActivitys = activitys.filter((activity) =>
+              activity.name.toLowerCase().includes(val.toLowerCase())
+            );
+            inputValueUpdate(filteredActivitys, "filteredActivitys");
           }}
         />
       </View>
 
-      <View style={[styles.listContainer, {marginBottom: '10%'}]}>
+      <View style={[styles.listContainer, { marginBottom: "10%" }]}>
         <View style={styles.HeadItem}>
           <Text style={styles.text}>รายการกิจกรรม</Text>
           <Text style={styles.text}>เผาผลาญ kcal</Text>
@@ -105,41 +107,39 @@ const CalActivities = ({ navigation }) => {
           )}
         />
       </View>
-      
 
-        <View style={styles.addContainer}>
-          <Text style={styles.headText}>เพิ่มกิจกรรมด้วยตัวเอง</Text>
-          <View style={styles.inputContainer}>
-            <Text style={styles.text}>กิจกรรม</Text>
-            <Text style={styles.text}>kcal</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.inputNew}
-              placeholder="                                    "
-              value={state.activity}
-              onChangeText={(val) => inputValueUpdate(val, "activity")}
-            />
-            <TextInput
-              style={styles.inputNew}
-              placeholder="                 "
-              value={state.cal}
-              onChangeText={(val) => inputValueUpdate(val, "cal")}
-            />
-          </View>
-          <View style={styles.inputContainer2}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => console.log("save button")}
-            >
-              <Text style={styles.buttonText}>บันทึก</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.addContainer}>
+        <Text style={styles.headText}>เพิ่มกิจกรรมด้วยตัวเอง</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.text}>กิจกรรม</Text>
+          <Text style={styles.text}>kcal</Text>
         </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputNew}
+            placeholder="                                    "
+            value={state.activity}
+            onChangeText={(val) => inputValueUpdate(val, "activity")}
+          />
+          <TextInput
+            style={styles.inputNew}
+            placeholder="                 "
+            value={state.cal}
+            onChangeText={(val) => inputValueUpdate(val, "cal")}
+          />
+        </View>
+        <View style={styles.inputContainer2}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => console.log("save button")}
+          >
+            <Text style={styles.buttonText}>บันทึก</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -212,13 +212,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   addContainer: {
-    backgroundColor: "gray",
+    // backgroundColor: "gray",
     alignItems: "center",
-    width: "90%",
-    flex: 0.4,
+    width: 350,
+    flex: 1,
     justifyContent: "flex-end",
     margin: 50,
-    height: 90
+    height: 90,
   },
   input: {
     fontSize: 20,
@@ -231,10 +231,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#D9D9D9",
     borderRadius: 50,
   },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 350,
+    // margin: 10,
+    // backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    // paddingLeft: 10,
+    justifyContent: "space-between",
+  },
   inputContainer2: {
     flexDirection: "row",
     alignItems: "center",
-    width: "80%",
+    width: 350,
     margin: 10,
     // backgroundColor: "#D9D9D9",
     borderRadius: 10,
@@ -256,6 +266,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
 
 export default CalActivities;

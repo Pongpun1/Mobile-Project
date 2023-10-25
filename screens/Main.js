@@ -5,11 +5,10 @@ import {
   StyleSheet,
   View,
   Text,
-  Dimensions,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { ProgressChart } from "react-native-chart-kit";
+import CircularProgress from "react-native-circular-progress-indicator";
 
 const MainScreen = ({ navigation }) => {
   const [state, setState] = useState({
@@ -37,29 +36,24 @@ const MainScreen = ({ navigation }) => {
     { name: "วิ่ง", calories: 200 },
   ];
 
-  const data = {
-    data: [0.8, 0.2],
-    labels: ["ที่ได้รับ", "คงเหลือ"]
-  };
-
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.HeadText}>ปริมาณแคลอรี่ของคุณในวันนี้</Text>
-        <ProgressChart
-          data={data}
-          width={Dimensions.get("window").width * 0.9}
-          height={220}
-          chartConfig={{
-            backgroundGradientFrom: "#5BA6FF",
-            backgroundGradientTo: "#76B5FF",
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          }}
-          style={{
-            fontWeight: "bold",
-            borderRadius: 16,
-          }}
+        <Text style={styles.HeadText}>เปอร์เซ็นต์แคลอรี่ที่กินวันนี้</Text>
+        <CircularProgress
+          radius={100}
+          value={85}
+          maxValue={100}
+          progressValueColor={"#5BA6FF"}
+          fontSize={20}
+          valueSuffix={"%"}
+          inActiveStrokeColor={"#5BA6FF"}
+          activeStrokeColor={"#5BA6FF"}
+          title={"เปอร์เซ็นต์"}
+          inActiveStrokeOpacity={0.2}
+          inActiveStrokeWidth={6}
+          duration={1000}
+          onAnimationComplete={() => setValue(50)}
         />
 
         <View style={styles.list}>
@@ -141,6 +135,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 25,
     marginTop: 20,
+    marginBottom: 5,
   },
   list: {
     alignItems: "center",
