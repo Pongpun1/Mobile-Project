@@ -13,7 +13,7 @@ import {
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSelector, useDispatch} from "react-redux";
-import { userData, clearData } from "../store/actions/userAction";
+import { userKey, clearData } from "../store/actions/userAction";
 import firebase from '../database/calcalDB';
 
 
