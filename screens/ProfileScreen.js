@@ -47,7 +47,7 @@ const ProfileScreen = ({route, navigation}) =>{
       userDoc.get().then((res) => {
         if (res.exists) {
           const user = res.data();
-          setState(prevState => ({
+          setState((prevState) => ({
             ...prevState,
             key: res.id,
             gender: user.gender,
@@ -60,6 +60,17 @@ const ProfileScreen = ({route, navigation}) =>{
           }));
         } else {
           console.log("Document does not exist!!");
+          setState((prevState) => ({
+            ...prevState,
+            gender: '',
+            birthday: '',
+            weight: '',
+            height: '',
+            activity: '',
+            tdee: '0',
+            date: new Date(),
+            showPicker: false
+          }));
         }
       });
     };
@@ -67,6 +78,8 @@ const ProfileScreen = ({route, navigation}) =>{
     const unsubscribe = navigation.addListener('focus', () => {
       fetchUserData();
     });
+  
+    fetchUserData();
   
     return unsubscribe;
   }, [navigation]);
@@ -180,7 +193,7 @@ const ProfileScreen = ({route, navigation}) =>{
         BMI: calculateBMI(),
       })
       .then(() => {
-        navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: state.key } });
+        navigation.navigate("หน้าหลักใช้งาน", { screen: "Main", params: { key: state.key } });
         Alert.alert(
           "Updating Alert",
           "อัพเดทข้อมูลของคุณแล้ว"

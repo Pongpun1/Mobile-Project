@@ -90,7 +90,7 @@ const AccountScreen = ({navigation}) => {
             password: hashedPassword
           })
           .then(() => {
-            navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: key } });
+            navigation.navigate("หน้าหลักใช้งาน", { screen: "Main", params: { key: key } });
             Alert.alert(
               "Updating Alert",
               "อัพเดทข้อมูลของคุณแล้ว"

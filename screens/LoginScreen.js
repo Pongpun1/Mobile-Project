@@ -33,12 +33,12 @@ const LoginScreen = ({route, navigation}) =>{
 
   const handleLogin = (userId) => {
     dispatch(userKey(userId));
-    navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: userId } });
+    navigation.navigate("หน้าหลักใช้งาน", { screen: "Main", params: { key: userId } });
   }
 
   const login = () => {
     // dispatch(userKey("Z4HNI9AMbdVA8piXkJQE"));
-    // navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: "Z4HNI9AMbdVA8piXkJQE" } });
+    // navigation.navigate("หน้าหลักใช้งาน", { screen: "Main", params: { key: "Z4HNI9AMbdVA8piXkJQE" } });
     if (!state.username || !state.password) {
       Alert.alert(
         "Missing Information",

@@ -53,7 +53,6 @@ const MainScreen = ({ navigation }) => {
           inActiveStrokeOpacity={0.2}
           inActiveStrokeWidth={6}
           duration={1000}
-          onAnimationComplete={() => setValue(50)}
         />
 
         <View style={styles.list}>

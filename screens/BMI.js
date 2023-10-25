@@ -57,31 +57,31 @@ const BMIscreen = ({route, navigation}) => {
         )}
 
         {(state.bmi < 18.5) && (     
-          <View> 
+          <View style={styles.statusBox}>
             <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
             <Text style={styles.statusText}>ต่ำกว่ามาตรฐาน</Text>
           </View>
         )}
         {(state.bmi >= 18.5 && state.bmi <=22.9) && (     
-          <View> 
+          <View style={styles.statusBox}>
             <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
             <Text style={styles.statusText}>ปกติ</Text>
           </View>
         )}
         {(state.bmi >= 23 && state.bmi <=24.9) && (     
-          <View> 
+          <View style={styles.statusBox}>
             <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
             <Text style={styles.statusText}>เกินมาตรฐาน</Text>
           </View>
         )}
         {(state.bmi >= 25 && state.bmi <=29.9) && (     
-          <View> 
+          <View style={styles.statusBox}>
             <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
             <Text style={styles.statusText}>อ้วน</Text>
           </View>
         )}
         {(state.bmi >= 30) && (     
-          <View> 
+          <View style={styles.statusBox}>
             <Text style={styles.statusText}>คุณอยู่ในเกณฑ์</Text>
             <Text style={styles.statusText}>อ้วนมาก</Text>
           </View>

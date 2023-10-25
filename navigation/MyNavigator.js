@@ -66,7 +66,7 @@ function DrawerNavigator() {
         drawerPosition: "right",
         drawerActiveTintColor: "#71B2FF",
         drawerInactiveTintColor: "gray",
-        headerShown: false
+        // headerShown: false
 
       }}
     >
