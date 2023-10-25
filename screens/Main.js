@@ -74,7 +74,6 @@ const MainScreen = ({ navigation }) => {
           style={{
             marginVertical: 8,
             borderRadius: 10,
-
             fontWeight: "bold",
           }}
         />
