@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
+import { FontAwesome5 } from '@expo/vector-icons'; 
 import {
   StyleSheet,
   View,
@@ -14,8 +15,8 @@ import { BarChart } from "react-native-chart-kit";
 
 const MainScreen = ({ navigation }) => {
   const [state, setState] = useState({
-    menu: "",
-    activity: "",
+    menuList: [],
+    activityList: [],
   });
 
   const inputValueUpdate = (val, prop) => {
@@ -30,13 +31,14 @@ const MainScreen = ({ navigation }) => {
     { name: "ผัดไทย", calories: 420 },
     { name: "สลัด", calories: 180 },
     { name: "พิซซ่า", calories: 700 },
+  
   ];
 
   const ActivityData = [
     { name: "วิดพื้น", calories: 350 },
     { name: "ซิดอัพ", calories: 300 },
     { name: "วิ่ง", calories: 200 },
-    { name: "ว่ายน้ำ", calories: 700 },
+
   ];
 
   return (
@@ -86,15 +88,9 @@ const MainScreen = ({ navigation }) => {
               <Entypo name="plus" size={24} color="black" />
             </TouchableOpacity>
           </View>
-
           <View style={[styles.listContainer]}>
-            <FlatList
-              style={{ width: "100%" }}
-              data={menuData}
-              keyExtractor={(item, index) => index.toString()}
-              nestedScrollEnabled={true}
-              renderItem={({ item }) => (
-                <View style={styles.foodItem}>
+            {menuData.map((item, index) => (
+                <View key={index} style={styles.foodItem}>
                   <View style={styles.itemRow1}>
                     <Text style={styles.textcount}>{item.name}</Text>
                     <Text style={styles.textcount}>Text * 1</Text>
@@ -102,15 +98,16 @@ const MainScreen = ({ navigation }) => {
                   <View style={styles.itemRow}>
                     <Text style={styles.textcal}>{item.calories} kcal</Text>
                     <TouchableOpacity style={styles.iconContainer}>
-                      <Entypo name="plus" size={24} color="black" />
+                      <FontAwesome5 name="trash-alt" size={24} color="black" />
                     </TouchableOpacity>
                   </View>
                 </View>
-              )}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
-            />
+              ))}
           </View>
+          <View style={styles.bottomBar}></View>
         </View>
+
+
 
         <View style={styles.list}>
           <View style={styles.headerContainer}>
@@ -119,31 +116,25 @@ const MainScreen = ({ navigation }) => {
               <Entypo name="plus" size={24} color="black" />
             </TouchableOpacity>
           </View>
-
           <View style={[styles.listContainer]}>
-            <FlatList
-              style={{ width: "100%" }}
-              data={ActivityData}
-              keyExtractor={(item, index) => index.toString()}
-              nestedScrollEnabled={true}
-              renderItem={({ item }) => (
-                <View style={styles.foodItem}>
-                  <View style={styles.itemRow1}>
-                    <Text style={styles.textcount}>{item.name}</Text>
-                    <Text style={styles.textcount}>Text นาที</Text>
-                  </View>
-                  <View style={styles.itemRow}>
-                    <Text style={styles.textcal}>{item.calories} kcal</Text>
-                    <TouchableOpacity style={styles.iconContainer}>
-                      <Entypo name="plus" size={24} color="black" />
-                    </TouchableOpacity>
-                  </View>
+              {ActivityData.map((item, index) => (
+              <View key={index} style={styles.foodItem}>
+                <View style={styles.itemRow1}>
+                  <Text style={styles.textcount}>{item.name}</Text>
+                  <Text style={styles.textcount}>Text นาที</Text>
                 </View>
-              )}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
-            />
+                <View style={styles.itemRow}>
+                  <Text style={styles.textcal}>{item.calories} kcal</Text>
+                  <TouchableOpacity style={styles.iconContainer}>
+                    <FontAwesome5 name="trash-alt" size={24} color="black" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
           </View>
+          <View style={styles.bottomBar}></View>
         </View>
+
 
       </View>
     </ScrollView>
@@ -157,67 +148,103 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     marginRight: 50,
   },
+  HeadItem: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
+    backgroundColor: "#71B2FF",
+  },
   HeadText: {
     fontWeight: "bold",
     fontSize: 25,
     marginTop: 20,
   },
+  list: {
+    alignItems: "center",
+    width: 350,
+    marginTop: 20,
+    marginBottom: 30,
+  },
   headerContainer: {
-    backgroundColor: "#FFF9F9",
+    padding: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    backgroundColor: "#71B2FF",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "85%",
-    height: 30,
+    textAlign: "center",
+    justifyContent: "flex-start",
+    width: 350,
+    height: 50,
+  },
+  bottomBar: {
     padding: 10,
-    borderRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    backgroundColor: "#D9D9D9",
+    width: 350,
+    height: 10,
+  },
+  headText2: {
+    fontWeight: "bold",
+    fontSize: 20,
   },
   iconContainer: {
     alignItems: "center",
     justifyContent: "center",
-  },
-  headText2: {
-    fontWeight: "bold",
-    fontSize: 25,
+    marginLeft: 10,
   },
   listContainer: {
+    width: "100%",
     alignItems: "center",
-    width: "85%",
+  },
+  foodItem: {
+    flexDirection: "row",
+    width: 350,
+    padding: 10,
+    alignItems: "center",
     backgroundColor: "#D9D9D9",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    justifyContent: "space-between",
+    borderBottomWidth: 3,
+    borderBottomColor: 'black',
   },
-  text: {
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 18,
-  },
-  textcount: {
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  textcal: {
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 18,
-    marginTop: 13,
-  },
+  
   itemRow: {
     flexDirection: "row",
     alignItems: "flex-end",
   },
-  separator: {
-    height: 1,
-    backgroundColor: "gray",
+  textcount: {
+    fontWeight: "bold",
+    fontSize: 15,
   },
-  foodItem: {
+  textcal: {
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 15,
+    marginTop: 13,
+  },
+  separator: {
+    height: 3,
+    width: 300,
+    backgroundColor: "black",
+  },
+  listItem: {
     flexDirection: "row",
-    width: "81%",
-    backgroundColor: "#D9D9D9",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
     justifyContent: "space-between",
-    marginLeft: 30,
+    backgroundColor: "lightgray",
+    width: 350,
+  },
+  text: {
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 17,
+    padding: 7,
+  },
+  text1: {
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 15,
+    padding: 7,
   },
   gauge: {
     position: "absolute",
@@ -230,11 +257,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     color: "#000",
     fontSize: 24,
-  },
-  list: {
-    alignItems: "center",
-    width: '100%',
-    marginTop: 20
   },
 });
 
