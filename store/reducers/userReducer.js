@@ -1,4 +1,4 @@
-import { USER_DATA, CLEAR_DATA  } from "../actions/userAction";
+import { USER_KEY, CLEAR_DATA  } from "../actions/userAction";
 import firebase from "../../database/calcalDB";
 
 const initialState = {
@@ -9,7 +9,7 @@ const initialState = {
     
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
-      case USER_DATA:
+      case USER_KEY:
         return {
           ...state,
           key: action.userID,

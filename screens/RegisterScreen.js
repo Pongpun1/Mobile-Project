@@ -3,7 +3,7 @@ import { StyleSheet,Text ,View, TextInput, TouchableOpacity, Alert} from 'react-
 import firebase from '../database/calcalDB';
 import bcrypt from 'react-native-bcrypt';
 import { useSelector, useDispatch} from "react-redux";
-import { userData, clearData } from "../store/actions/userAction";
+import { userKey, clearData } from "../store/actions/userAction";
 
 const RegisterScreen = ({route, navigation}) =>{
   const dispatch = useDispatch();
@@ -98,7 +98,7 @@ const RegisterScreen = ({route, navigation}) =>{
             password: '',
             confirmPassword: ''
           }));
-          dispatch(userData(docKey));
+          dispatch(userKey(docKey));
           navigation.navigate("หน้าหลักใช้งาน", { screen: "ข้อมูลส่วนตัว", params: { key: docKey } });
           Alert.alert(
             "Registered",

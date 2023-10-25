@@ -10,12 +10,11 @@ const BMIscreen = ({route, navigation}) => {
     bmi: "0"
   });
 
-  const fetchUserData = useCallback(() => {
-    const userDoc = firebase
-      .firestore()
-      .collection("accounts")
-      .doc(key);
-    userDoc.get().then((res) => {
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userDoc = firebase.firestore().collection("accounts").doc(key);
+      const res = await userDoc.get();
       if (res.exists) {
         const user = res.data();
         if (user.BMI) {
@@ -25,26 +24,17 @@ const BMIscreen = ({route, navigation}) => {
             bmi: user.BMI,
           }));
         } else {
-          // หากไม่มี user.BMI ให้นำพาผู้ใช้ไปที่หน้าที่ต้องการ
           Alert.alert('Missing Information', 'กรุณากรอกข้อมูลส่วนตัวของคุณก่อน');
           navigation.navigate("หน้าหลักใช้งาน", { screen: "ข้อมูลส่วนตัว", params: { key: key } });
         }
       } else {
         console.log("Document does not exist!!");
       }
-    });
-  }, [key]);
-
-  useEffect(() => {
+    };
     fetchUserData();
-  }, [fetchUserData]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchUserData();
-    });
+    const unsubscribe = navigation.addListener('focus', fetchUserData);
     return unsubscribe;
-  }, [navigation, fetchUserData]);
+  }, [navigation, key]);
   
   return (
     <ScrollView style={styles.container}>
