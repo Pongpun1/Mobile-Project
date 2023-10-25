@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   StyleSheet,Text,
   View,
@@ -9,35 +9,45 @@ import {
 } from 'react-native';
 import firebase from '../database/calcalDB';
 import bcrypt from 'react-native-bcrypt';
+import { useSelector, useDispatch} from "react-redux";
+import { userKey, clearData } from "../store/actions/userAction";
+const LoginScreen = ({route, navigation}) =>{
+  const dispatch = useDispatch();
+  const AccountCollection = firebase.firestore().collection("accounts");
+  const [state, setState] = useState({
+    username: '',
+    password: '',
+  });
 
-class LoginScreen extends Component {
-  constructor(props){
-    super(props);
-
-    this.AccountCollection = firebase.firestore().collection("accounts");
-
-    this.state = {
-      username: '',
-      password: '',
-    };
+  const inputValueUpdate = (val, prop) => {
+    setState(prevState => ({
+      ...prevState,
+      [prop]: val
+    }));
   }
 
-  inputValueUpdate = (val, prop) => {
-    const state = this.state;
-    state[prop] = val;
-    this.setState(state);
+  bcrypt.setRandomFallback((len) => {
+    const buf = new Uint8Array(len);
+    return buf.map(() => Math.floor(Math.random() * 256));
+  });
+
+  const handleLogin = (userId) => {
+    dispatch(userKey(userId));
+    navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: userId } });
   }
 
-  login() {
-    if (!this.state.username || !this.state.password) {
+  const login = () => {
+    // dispatch(userKey("Z4HNI9AMbdVA8piXkJQE"));
+    // navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: "Z4HNI9AMbdVA8piXkJQE" } });
+    if (!state.username || !state.password) {
       Alert.alert(
         "Missing Information",
         "กรุณากรอก Username และ Password"
       );
       return;
     }
-    this.AccountCollection
-      .where('username', '==', this.state.username)
+    AccountCollection
+      .where('username', '==', state.username)
       .get()
       .then((querySnapshot) => {
         if (querySnapshot.empty) {
@@ -48,8 +58,8 @@ class LoginScreen extends Component {
         querySnapshot.forEach((doc) => {
           const userData = doc.data();
           const userId = doc.id;
-          if(bcrypt.compareSync(this.state.username+this.state.password, userData.password)){
-            this.props.navigation.navigate("หน้าหลักใช้งาน", {key: userId});
+          if(bcrypt.compareSync(state.username+state.password, userData.password)){
+            handleLogin(userId);
           }else{
             Alert.alert('Login Failed', 'ไม่พบผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
           }
@@ -60,7 +70,6 @@ class LoginScreen extends Component {
         Alert.alert('Login Error', 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ โปรดลองอีกครั้ง');
       });
   };
-  render() {
     return (
       <View style={styles.container}>
       <Image style={styles.stretch} source={require('../assets/bmi.png')}/>
@@ -69,33 +78,32 @@ class LoginScreen extends Component {
       <TextInput
         style={styles.input}
         placeholder="Username"
-        value={this.state.username}
-        onChangeText={(val) => this.inputValueUpdate(val, "username")}
+        value={state.username}
+        onChangeText={(val) => inputValueUpdate(val, "username")}
       />
       <Text style={styles.Text}>รหัสผ่าน</Text>
       <TextInput
         secureTextEntry={true}
         style={styles.input}
         placeholder="Password"
-        value={this.state.password}
-        onChangeText={(val) => this.inputValueUpdate(val, "password")}
+        value={state.password}
+        onChangeText={(val) => inputValueUpdate(val, "password")}
       />
 
       <View style={{ flexDirection:'row', gap:35, }}>
         <TouchableOpacity
-        style={styles.roundButton1} onPress={ ()=> {this.props.navigation.navigate("สมัครสมาชิก");} }>
+        style={styles.roundButton1} onPress={ ()=> {navigation.navigate("สมัครสมาชิก");} }>
         <Text style={styles.ButtonText}>สมัครสมาชิก</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.roundButton1}
-          onPress={() => this.login()}
+          onPress={() => login()}
           >
           <Text style={styles.ButtonText}>เข้าสู่ระบบ</Text>
         </TouchableOpacity>
         </View>
     </View>
     )
-  }
 }
 
 
@@ -105,7 +113,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
-    marginBottom: 80,
+    backgroundColor: "white",
   },
   stretch: {
     width: 270,

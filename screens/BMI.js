@@ -1,20 +1,54 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { StyleSheet, Text, View, Image, ScrollView, Alert} from "react-native";
+import firebase from '../database/calcalDB';
+import { useSelector, useDispatch} from "react-redux";
+import { userData, clearData } from "../store/actions/userAction";
 
-const BMIscreen = ({ navigation }) => {
+const BMIscreen = ({route, navigation}) => {
+  const key = useSelector(state => state.account.key);
+  const [state, setState] = useState({
+    bmi: "0"
+  });
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userDoc = firebase.firestore().collection("accounts").doc(key);
+      const res = await userDoc.get();
+      if (res.exists) {
+        const user = res.data();
+        if (user.BMI) {
+          setState(prevState => ({
+            ...prevState,
+            key: res.id,
+            bmi: user.BMI,
+          }));
+        } else {
+          Alert.alert('Missing Information', 'กรุณากรอกข้อมูลส่วนตัวของคุณก่อน');
+          navigation.navigate("หน้าหลักใช้งาน", { screen: "ข้อมูลส่วนตัว", params: { key: key } });
+        }
+      } else {
+        console.log("Document does not exist!!");
+      }
+    };
+    fetchUserData();
+    const unsubscribe = navigation.addListener('focus', fetchUserData);
+    return unsubscribe;
+  }, [navigation, key]);
+  
   return (
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
       <View style={{alignItems: "center",justifyContent: "center",}}>
         <Text style={styles.HeadText}>ค่าดัชนีมวลกายอยู่ที่</Text>
-        <Text style={styles.BMItext}>21.8</Text>
+        <Text style={styles.BMItext}>{state.bmi}</Text>
       </View>
         
       </View>
       <View style={styles.content}>
 
         <View style={styles.box}>
-          <Image style={styles.stretch} source={require("/assets/thin.png")} />
+          <Image style={styles.stretch} source={require("../assets/thin.png")} />
           <View style={{flexDirection: 'column'}}>
           <Text style={styles.Text}>ระดับ BMI ต่ำกว่า 18.5</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ ต่ำกว่ามาตรฐาน</Text>
@@ -26,7 +60,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-          <Image style={styles.stretch} source={require("/assets/normal.png")}/>
+          <Image style={styles.stretch} source={require("../assets/normal.png")}/>
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI อยู่ในช่วง 18.5 - 22.9</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ น้ำหนักสมส่วน</Text>
@@ -37,7 +71,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-            <Image style={styles.stretch} source={require("/assets/fat1.png")} />
+            <Image style={styles.stretch} source={require("../assets/fat1.png")} />
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI อยู่ในช่วง 23.0 - 24.9</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ น้ำหนักเกินมาตรฐาน</Text>
@@ -48,7 +82,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-          <Image style={styles.stretch2} source={require("/assets/fat2.png")} />
+          <Image style={styles.stretch2} source={require("../assets/fat2.png")} />
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI อยู่ในช่วง 25.0 - 29.9</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ อ้วน</Text>
@@ -59,7 +93,7 @@ const BMIscreen = ({ navigation }) => {
         </View>
 
         <View style={styles.box}>
-          <Image style={styles.stretch} source={require("/assets/fat3.png")} />
+          <Image style={styles.stretch} source={require("../assets/fat3.png")} />
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.Text}>ระดับ BMI มากกว่า 30.0</Text>
             <Text style={{ fontWeight: 'bold'}}>อยู่ในเกณฑ์ อ้วนมาก</Text>

@@ -39,8 +39,11 @@ function Login(){
         <Stack.Screen
           options={{ headerShown: false }} name="เข้าสู่ระบบ" component={LoginScreen}/>
         <Stack.Screen name="สมัครสมาชิก" component={RegisterScreen} />
-        <Stack.Screen name="ข้อมูลส่วนตัว" component={ProfileScreen} />
-        <Stack.Screen options={{ headerShown: false }} name="หน้าหลักใช้งาน" component={DrawerNavigator}/>
+        <Stack.Screen name="หน้าหลักใช้งาน" component={DrawerNavigator}
+          options={
+          ({ route }) => ({
+            headerShown: false,
+          })}/>
     </Stack.Navigator>
   )
 }
@@ -59,23 +62,25 @@ function DrawerNavigator() {
       drawerInactiveTintColor: "gray",
     }}>
         <Drawer.Screen  name="แคลอรี่วันนี้" component={MainTabNavi}
-        options={{
+        options={({route,  navigation }) => ({
           drawerLabel: "หน้าหลัก",
           drawerIcon: ({ color }) => { return <AntDesign name="home" size={40} color="black" />; },
-
-        }} />
+        })}
+        />
 
         <Drawer.Screen name="ข้อมูลส่วนตัว" component={ProfileScreen}
-        options={{
+        options={({route,  navigation }) => ({
           drawerLabel: "แก้ไขข้อมูลส่วนตัว",
           drawerIcon: ({ color }) => { return <FontAwesome5 name="user-edit" size={35} color="black" />; },
-        }} />
+        })}
+        />
 
         <Drawer.Screen name="ข้อมูลบัญชี" component={AccountScreen}
-        options={{
+        options={({route, navigation }) => ({
           drawerLabel: "แก้ไขข้อมูลบัญชี",
           drawerIcon: ({ color }) => { return <Ionicons name="md-key-outline" size={40} color="black" />; },
-        }} />
+        })}
+        />
 
         <Drawer.Screen name="Logout" component={Login}
         options={{
@@ -86,25 +91,6 @@ function DrawerNavigator() {
       </Drawer.Navigator>
   );
 }
-// function ProfileNavi() {
-//   return (
-//     <Stack.Navigator 
-//     screenOptions={{headerStyle: {backgroundColor: "#4a148c"}, headerTintColor: "white"}}>
-//       <Stack.Screen options={{ headerShown: false }} name="ข้อมูลส่วนตัว" component={ProfileScreen} />
-//     </Stack.Navigator>
-//   )
-// }
-
-// function AccNavi() {
-//   return (
-//     <Stack.Navigator 
-//     screenOptions={{headerStyle: {backgroundColor: "#4a148c"}, headerTintColor: "white"}}>
-//       <Stack.Screen options={{ headerShown: false }} name="ข้อมูลบัญชีของคุณ" component={AccountScreen} />
-//     </Stack.Navigator>
-//   )
-// }
-
-
 
 // ส่วนของ Tab Bar ด้านล่าง
 function MainTabNavi() {
@@ -117,10 +103,12 @@ function MainTabNavi() {
       tabBarStyle: { backgroundColor: '#71B2FF', height: 75,},
     }}>
       <Tab.Screen 
-      name="แคลอรี่วันนี้" component={MainScreenNavi} options={{headerShown: false,tabBarIcon: () => {
+      name="หน้าหลัก"
+      component={MainScreenNavi}
+      options={{headerShown: false,tabBarIcon: () => {
         return <AntDesign name="home" size={45} color="black" />}
       }}/>
-      <Tab.Screen  name="รายการแคลอรี่" component={MenuScreenNavi} options={{headerShown: false,tabBarIcon: () => {
+      <Tab.Screen  name="รายการ" component={MenuScreenNavi} options={{headerShown: false,tabBarIcon: () => {
         return <MaterialIcons name="restaurant-menu" size={45} color="black" />}
       }}/>
       <Tab.Screen  name="ดัชนีมวลกาย" component={BMIscreen} options={{headerShown: false,tabBarIcon: () => {
@@ -139,7 +127,10 @@ function MainScreenNavi() {
       headerTintColor: "black",
       headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
     }}>
-        <Stack.Screen options={{ headerShown: false }} name="Stackแคลอรี่วันนี้" component={MainScreen}/>
+        <Stack.Screen
+        options={{ headerShown: false }}
+        name="Stackแคลอรี่วันนี้"
+        component={MainScreen}/>
     </Stack.Navigator>
   )
 }
@@ -154,17 +145,7 @@ function MenuScreenNavi(){
     </Stack.Navigator>
   )
 }
-// function BMIScreenNavi(){
-//   return(
-//     <Stack.Navigator  screenOptions={{
-//       headerStyle: { backgroundColor: "#71B2FF" },
-//       headerTintColor: "black",
-//       headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
-//     }}>
-//       <Stack.Screen options={{ headerShown: false }} name="ดัชนีมวลกาย" component={BMIscreen}/>
-//     </Stack.Navigator>
-//   )
-// }
+
 function HistoryScreenNavi(){
   return(
     <Stack.Navigator  screenOptions={{

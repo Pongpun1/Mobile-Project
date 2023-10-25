@@ -1,74 +1,77 @@
-import React, {Component, useState} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   TextInput,
   TouchableOpacity,
   Pressable,
   Platform,
   Alert
 } from "react-native";
-import firebase from '../database/calcalDB';
 import {Picker} from '@react-native-picker/picker';
-import { useSelector, useDispatch } from "react-redux";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { userData } from "../store/actions/userAction";
+import { useSelector, useDispatch} from "react-redux";
+import { userData, clearData } from "../store/actions/userAction";
+import firebase from '../database/calcalDB';
 
-class ProfileScreen extends Component {
-  constructor(props){
-    super(props);
 
-    this.AccountCollection = firebase.firestore().collection("accounts");
+const ProfileScreen = ({route, navigation}) =>{
+  const AccountCollection = firebase.firestore().collection("accounts");
+  const key = useSelector(state => state.account.key);
+  const [state, setState] = useState({
+    gender: '',
+    birthday: '',
+    weight: '',
+    height: '',
+    activity: '',
+    tdee: '0',
+    date: new Date(),
+    showPicker: false
+  });
 
-    this.state = {
-      gender: '',
-      birthday: '',
-      weight: '',
-      height: '',
-      activity: '',
-      date: new Date(),
-      showPicker: false
+  const inputValueUpdate = (val, prop) => {
+    setState(prevState => ({
+      ...prevState,
+      [prop]: val
+    }));
+  }
+
+  useEffect(() => {
+    const fetchUserData = () => {
+      const userDoc = firebase
+        .firestore()
+        .collection("accounts")
+        .doc(key);
+      userDoc.get().then((res) => {
+        if (res.exists) {
+          const user = res.data();
+          setState(prevState => ({
+            ...prevState,
+            key: res.id,
+            gender: user.gender,
+            birthday: user.birthday,
+            date: birthdayToDate(user.birthday),
+            weight: user.weight,
+            height: user.height,
+            activity: user.activity,
+            tdee: user.TDEE,
+          }));
+        } else {
+          console.log("Document does not exist!!");
+        }
+      });
     };
-  }
-  componentDidMount() {
-    const { route } = this.props;
-    const { key } = route.params;
-    this.setState({
-      gender: '',
-      birthday: '',
-      weight: '',
-      height: '',
-      activity: '',
-      date: new Date(),
-      showPicker: false
+  
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchUserData();
     });
-    const userDoc = firebase
-          .firestore()
-          .collection("accounts")
-          .doc(key);
-        userDoc.get().then((res) => {
-          if (res.exists) {
-            const user = res.data();
-            this.setState({
-              key: res.id,
-              gender: user.gender,
-              birthday: user.birthday,
-              weight: user.weight,
-              height: user.height,
-              activity: user.activity,
-            });
-          } else {
-            console.log("Document does not exist!!");
-          }
-        });
-  }
-  inputValueUpdate = (val, prop) => {
-    const state = this.state;
-    state[prop] = val;
-    this.setState(state);
-  }
-  calculateAge = (birthday) => {
+  
+    return unsubscribe;
+  }, [navigation]);
+
+  const calculateAge = (birthday) => {
     const birthDate = new Date(birthday);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -79,7 +82,50 @@ class ProfileScreen extends Component {
     return age;
   };
 
-  formatDate = (rawDate) =>{
+  const calculateTDEE = () => {
+    console.log(state)
+    if (!state.gender || !state.birthday || !state.weight || !state.height || !state.activity) {
+      return '0';
+    }
+    const gender = state.gender
+    const weight = state.weight;
+    const height = state.height;
+    const age = calculateAge(state.date);
+    const activity = state.activity;
+    let BMR = 0
+    if (gender == "ชาย"){
+      BMR = 66 + (13.7 * weight) + (5 * height) - (6.8 * age)
+    }else if(gender == "หญิง"){
+      BMR = 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age)
+    }
+    const TDEE = Math.floor(BMR * activity)
+    if(TDEE < 0){
+      return '0';
+    }else{
+      return TDEE.toString();
+    }
+  };
+
+  const calculateBMI = () => {
+    const weight = state.weight;
+    const height = state.height/100;
+    let BMI = weight/(height*height);
+    return BMI.toFixed(1);
+  };
+
+  const birthdayToDate = (birthday) =>{
+    if(birthday){
+      const parts = birthday.split('/'); // แยกวันที่ออกมาเป็นส่วนๆ
+    // สร้างวัตถุ Date โดยใช้ค่าที่แยกออกมา
+      const dateObject = new Date(parts[2], parts[1] - 1, parts[0]); // parts[2] คือปี, parts[1] คือเดือน, parts[0] คือวัน
+      return dateObject;
+    }else{
+      return new Date();
+    }
+    
+  }
+
+  const formatDate = (rawDate) =>{
     let date = new Date(rawDate);
     let year = date.getFullYear();
     let month = date.getMonth()+1;
@@ -87,150 +133,210 @@ class ProfileScreen extends Component {
     return `${day}/${month}/${year}`;
   }
 
-   toggleDatePicker = () =>{
-    this.inputValueUpdate(!this.state.showPicker, "showPicker")
+  const toggleDatePicker = () =>{
+    inputValueUpdate(!state.showPicker, "showPicker")
   }
-   ChangeDate = ({type}, selectedDate) =>{
-    console.log(type)
+
+  const ChangeDate = ({type}, selectedDate) =>{
     if (type == "set"){
       const currentDate = selectedDate;
-      this.inputValueUpdate(currentDate, "date")
+      inputValueUpdate(currentDate, "date")
+      
       if(Platform.OS == "android"){
-        this.toggleDatePicker()
-        this.inputValueUpdate(this.formatDate(currentDate), "birthday")
+        toggleDatePicker()
+        inputValueUpdate(formatDate(currentDate), "birthday")
       }
     } else{
-        this.toggleDatePicker()
+        toggleDatePicker()
     }
   }
-  update(){
-    console.log(this.calculateAge(this.state.date))
-    const updateDoc = this.AccountCollection
-      .doc(this.state.key);
+
+  const update = () => {
+    if (!state.gender || !state.birthday || !state.weight || !state.height || !state.activity) {
+      Alert.alert(
+        "Missing Information",
+        "กรุณากรอกข้อมูลให้ครบทุกช่อง"
+      );
+      return;
+    }
+    if (state.weight < 0 || state.height < 0) {
+      Alert.alert(
+        "Incorrect Information",
+        "กรุณากรอกข้อมูลให้ถูกต้อง"
+      );
+      return;
+    }
+    const updateDoc = AccountCollection
+      .doc(state.key);
     updateDoc
       .update({
-        gender: this.state.gender,
-        birthday: this.state.birthday,
-        weight: this.state.weight,
-        height: this.state.height,
-        activity: this.state.activity,
-        age: this.calculateAge(this.state.date)
+        gender: state.gender,
+        birthday: state.birthday,
+        weight: state.weight,
+        height: state.height,
+        activity: state.activity,
+        age: calculateAge(state.date),
+        TDEE: calculateTDEE(),
+        BMI: calculateBMI(),
       })
       .then(() => {
-        this.props.navigation.navigate("หน้าหลักใช้งาน", {key: this.state.key});
-        const dispatch = useDispatch() 
-        dispatch(userData(this.state.key));
+        navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: state.key } });
         Alert.alert(
           "Updating Alert",
           "อัพเดทข้อมูลของคุณแล้ว"
         );
       });
   }
-  render() {
-    return(
-      <View style={styles.container}>
+  return(
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={[{alignItems: "center"}]}>
         <Text style={styles.HeadText}>ข้อมูลส่วนตัว</Text>
-        <View>
+      
+        <View style={[{alignItems: "center", }]}>
 
-          <Text style={styles.Text}>เพศ</Text>
-          <Picker
-            selectedValue={this.state.gender}
-            onValueChange={(val) => this.inputValueUpdate(val, "gender")}
-            style={styles.dropdown}
-          >
-            <Picker.Item label="ระบุเพศ" value="0" />
-            <Picker.Item label="ชาย" value="ชาย" />
-            <Picker.Item label="หญิง" value="หญิง" />
-            <Picker.Item label="ไม่ระบุ" value="ไม่ระบุ" />
-          </Picker>
-
-          <Text style={styles.Text}>วันเกิด</Text>
-          {this.state.showPicker &&(
-            <DateTimePicker
-            mode="date"
-            display="spinner"
-            value={this.state.date}
-            onChange={this.ChangeDate}
-            maximumDate={new Date()}
-            />
-          )}
-          {/* ปุ่มวันเลือกวันFake */}
-          {this.state.showPicker &&(
-          <Pressable>
-            <TextInput 
-              style={[styles.input, { color: '#000000' }]}
-              placeholder="ระบุวันเกิด"
-              value={this.state.birthday}
-              onChangeText={(val) => this.inputValueUpdate(val, "birthday")}
+          <View style={[styles.tdeeBox, {flexDirection: "row"}]}>
+            <Text style={styles.tdeeText}>ค่า TDEE ของคุณคือ </Text>
+            <TextInput
+              style={[styles.tdeeShow, { color: '#000000' }]}
+              keyboardType="numeric"
+              value={calculateTDEE()}
               editable={false}
-            />
-          </Pressable>
-          )}
-          {/* ปุ่มวันเลือกวันจริง */}
-          {!this.state.showPicker &&(
-          <Pressable onPress={this.toggleDatePicker}>
-            <TextInput 
-              style={[styles.input, { color: '#000000' }]}
-              placeholder="ระบุวันเกิด"
-              value={this.state.birthday}
-              onChangeText={(val) => this.inputValueUpdate(val, "birthday")}
-              editable={false}
-            />
-          </Pressable>
-          )}
-          <Text style={styles.Text}>น้ำหนัก (กิโลกรัม)</Text>
-          <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={this.state.weight}
-          onChangeText={(val) => this.inputValueUpdate(val, "weight")}
-          />
-          <Text style={styles.Text}>ส่วนสูง (เซนติเมตร)</Text>
-          <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={this.state.height}
-          onChangeText={(val) => this.inputValueUpdate(val, "height")}
-          />
+              />
+          </View>
 
-          <Text style={styles.Text}>การออกกำลังกาย</Text>
-          <Picker
-            selectedValue={this.state.activity}
-            onValueChange={(val) => this.inputValueUpdate(val, "activity")}
-            style={styles.dropdown}
-          >
-            <Picker.Item label="เลือกพฤติกรรมการออกกำลังกาย" value="0" />
-            <Picker.Item label="ไม่เคยออกกำลังกาย" value="ไม่เคยออกกำลังกาย" />
-            <Picker.Item label="ออกกำลังกายเป็นบางครั้ง" value="ออกกำลังกายเป็นบางครั้ง" />
-            <Picker.Item label="ออกกำลังกายเป็นประจำ" value="ออกกำลังกายเป็นประจำ" />
-          </Picker>
-
+          <View style={[]}>
+            <Text style={styles.Text}>เพศ</Text>
+              <Picker
+                selectedValue={state.gender}
+                onValueChange={(val) => {
+                  inputValueUpdate(val, "gender")
+                }}
+                style={styles.dropdown}
+              >
+                <Picker.Item label="ระบุเพศ" value="" />
+                <Picker.Item label="ชาย" value="ชาย" />
+                <Picker.Item label="หญิง" value="หญิง" />
+              </Picker>
+            <Text style={styles.Text}>วันเกิด</Text>
+              {state.showPicker &&(
+                <DateTimePicker
+                mode="date"
+                display="spinner"
+                value={state.date}
+                onChange={ChangeDate}
+                maximumDate={new Date()}
+                />
+              )}
+              {/* ปุ่มวันเลือกวันFake */}
+              {state.showPicker &&(
+              <Pressable>
+                <TextInput 
+                  style={[styles.input, { color: '#000000' }]}
+                  placeholder="ระบุวันเกิด"
+                  value={state.birthday}
+                  onChangeText={(val) => inputValueUpdate(val, "birthday")}
+                  editable={false}
+                />
+              </Pressable>
+              )}
+              {/* ปุ่มวันเลือกวันจริง */}
+              {!state.showPicker &&(
+              <Pressable onPress={toggleDatePicker}>
+                <TextInput 
+                  style={[styles.input, { color: '#000000' }]}
+                  placeholder="ระบุวันเกิด"
+                  value={state.birthday}
+                  onChangeText={(val) => {
+                    inputValueUpdate(val, "birthday")
+                  }}
+                  editable={false}
+                />
+              </Pressable>
+              )}
+            <Text style={styles.Text}>น้ำหนัก (กิโลกรัม)</Text>
+              <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={state.weight}
+              onChangeText={(val) => {
+                inputValueUpdate(val, "weight")
+                
+              }}
+              />
+            <Text style={styles.Text}>ส่วนสูง (เซนติเมตร)</Text>
+              <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={state.height}
+              onChangeText={(val) => {
+                inputValueUpdate(val, "height")
+                
+              }}
+              />
+            <Text style={styles.Text}>การออกกำลังกาย</Text>
+              <Picker
+                selectedValue={state.activity}
+                onValueChange={(val) => {
+                  inputValueUpdate(val, "activity")
+                  
+                }}
+                style={styles.dropdown}
+              >
+                <Picker.Item label="เลือกพฤติกรรมการออกกำลังกาย" value="" />
+                <Picker.Item label="ไม่ได้ออกกำลังกายเลย" value="1.2" />
+                <Picker.Item label="ออกกำลังกายเบา ๆ (1-2 ครั้งต่อสัปดาห์)" value="1.375" />
+                <Picker.Item label="ออกกำลังกายปานกลาง (3-5 ครั้งต่อสัปดาห์)" value="1.55" />
+                <Picker.Item label="ออกกำลังกายหนัก (6-7 ครั้งต่อสัปดาห์)" value="1.725" />
+                <Picker.Item label="ออกกำลังกายหนักมาก (ทุกวัน)" value="1.9" />
+              </Picker>
+            </View> 
         </View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.update()}
-          >
-          <Text style={styles.buttonText}>บันทึก</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => update()}
+        >
+        <Text style={styles.buttonText}>บันทึก</Text>
+      </TouchableOpacity>
+      </ScrollView>
+    </View>
+  )
 }
-
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "white",
     flex: 1,
-    alignItems: "center",
   },
   HeadText: {
     fontWeight: "bold",
     fontSize: 30,
     marginTop: 50,
+    marginBottom: 10,
+  },
+  tdeeBox: {
+    justifyContent: 'center',
+    height: 60,
+    width: 350,
+    alignItems: "center",
+    backgroundColor: '#90C2FD',
+    borderRadius: 10,
+  },
+  tdeeText: {
+    fontWeight: "bold",
+    fontSize: 25,
+  },
+  tdeeShow:{
+    fontWeight: "bold",
+    height: 40,
+    width: 80,
+    borderRadius: 10,
+    backgroundColor: "white",
+    fontSize: 20,
+    opacity: 1,
+    textAlign:'center'
   },
   input: {
     height: 40,
-    width: 370,
-    marginLeft: 12,
+    width: 360,
     borderRadius: 50,
     borderWidth: 0,
     padding: 10,
@@ -253,10 +359,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   dropdown: {
-    width: 370,
+    width: 360,
     height: 40,
-    paddingLeft: 10,
-    marginLeft: 15,
     backgroundColor: "#D9D9D9",
     borderRadius: 100,
     borderWidth: 0,
@@ -264,7 +368,6 @@ const styles = StyleSheet.create({
   Text: {
     fontWeight: "bold",
     fontSize: 16,
-    marginLeft: 20,
     marginTop: 10,
     marginBottom: 6,
   },

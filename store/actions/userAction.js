@@ -1,8 +1,17 @@
-export const USER_DATA = 'USER_DATA'
+export const USER_KEY = 'USER_KEY'
 
-export const userData = (id) => {
+export const userKey = (id) => {
   return {
-    type: USER_DATA,
+    type: USER_KEY,
     userID: id
   }
 }
+
+
+export const CLEAR_DATA = 'CLEAR_DATA';
+// action creators
+export const clearData = () => {
+  return {
+    type: CLEAR_DATA
+  };
+};
