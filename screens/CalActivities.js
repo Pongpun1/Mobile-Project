@@ -12,8 +12,17 @@ import { black } from "color-name";
 
 const CalActivities = ({ navigation }) => {
   const [menu, setmenu] = useState("");
-  const inputValueUpdate = (val) => {
+  const [activity, setactivity] = useState("");
+  const [cal, setcal] = useState("");
+
+  const inputValueMenuUpdate = (val) => {
     setmenu(val); // Update the menu state
+  };
+  const inputValueActivityUpdate = (val) => {
+    setactivity(val); // Update the menu state
+  };
+  const inputValueCalUpdate = (val) => {
+    setcal(val); // Update the menu state
   };
 
   const menuData = [
@@ -57,7 +66,7 @@ const CalActivities = ({ navigation }) => {
           iconName="ios-search"
           placeholder="รายการกิจกรรม"
           value={menu}
-          onChangeText={inputValueUpdate}
+          onChangeText={inputValueMenuUpdate}
         />
       </View>
       <View style={styles.listContainer}>
@@ -78,28 +87,31 @@ const CalActivities = ({ navigation }) => {
       </View>
       <View style={styles.addContainer}>
         <Text style={styles.headText}>เพิ่มกิจกรรมด้วยตัวเอง</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.text}>กิจกรรม</Text>
+          <Text style={styles.text}>kcal</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputNew}
+            placeholder="                                    "
+            value={activity}
+            onChangeText={inputValueActivityUpdate}
+          />
+          <TextInput
+            style={styles.inputNew}
+            placeholder="                 "
+            value={cal}
+            onChangeText={inputValueCalUpdate}
+          />
+        </View>
         <View style={styles.inputContainer2}>
-          <TextInput
-            style={styles.input}
-            iconName="ios-search"
-            placeholder="รายการกิจกรรม"
-            value={menu}
-            onChangeText={inputValueUpdate}
-          />
-          <TextInput
-            style={styles.input}
-            iconName="ios-search"
-            placeholder="รายการกิจกรรม"
-            value={menu}
-            onChangeText={inputValueUpdate}
-          />
-          <TextInput
-            style={styles.input}
-            iconName="ios-search"
-            placeholder="รายการกิจกรรม"
-            value={menu}
-            onChangeText={inputValueUpdate}
-          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => console.log("save button")}
+          >
+            <Text style={styles.buttonText}>บันทึก</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -129,7 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   addContainer: {
-    backgroundColor: "gray",
+    // backgroundColor: "gray",
     alignItems: "center",
     width: "90%",
     flex: 0.4,
@@ -163,14 +175,25 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingLeft: 10,
   },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+    // margin: 10,
+    // backgroundColor: "#D9D9D9",
+    // borderRadius: 10,
+    // paddingLeft: 10,
+    justifyContent: "space-between",
+  },
   inputContainer2: {
     flexDirection: "row",
     alignItems: "center",
     width: "80%",
     margin: 10,
-    backgroundColor: "#D9D9D9",
+    // backgroundColor: "#D9D9D9",
     borderRadius: 10,
-    paddingLeft: 10,
+    // paddingLeft: 10,
+    justifyContent: "flex-end",
   },
   icon: {
     padding: 5,
@@ -178,11 +201,32 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 20,
     opacity: 0.6,
+    borderRadius: 50,
+  },
+  inputNew: {
+    fontSize: 20,
+    opacity: 0.6,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 50,
   },
   Text: {
     fontWeight: "bold",
     fontSize: 16,
     marginRight: 270,
+  },
+  button: {
+    width: 80,
+    height: 30,
+    // marginTop: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#90C2FD",
+    borderRadius: 50,
+  },
+  buttonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 
