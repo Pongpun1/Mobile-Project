@@ -35,7 +35,7 @@ const PopAddCalFood = ({ navigation }) => {
             value={state.menu}
             onChangeText={(val) => inputValueUpdate(val, "menu")}
           />
-          <Text style={styles.text}>จาร</Text>
+          <Text style={styles.unit}>จาร</Text>
         </View>
         <View style={styles.inputContainer2}>
           <TouchableOpacity
@@ -84,6 +84,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 8,
   },
+  unit: {
+    // fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 16,
+    padding: 8,
+  },
   textInput: {
     fontWeight: "bold",
     textAlign: "center",
@@ -116,7 +122,7 @@ const styles = StyleSheet.create({
   inputContainer2: {
     flexDirection: "row",
     alignItems: "center",
-    width: "80%",
+    width: 350,
     margin: 10,
     // backgroundColor: "#D9D9D9",
     borderRadius: 10,
