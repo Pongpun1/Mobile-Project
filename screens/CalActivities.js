@@ -11,18 +11,17 @@ import {
 import { black } from "color-name";
 
 const CalActivities = ({ navigation }) => {
-  const [menu, setmenu] = useState("");
-  const [activity, setactivity] = useState("");
-  const [cal, setcal] = useState("");
+  const [state, setState] = useState({
+    menu: "",
+    activity: "",
+    cal: "",
+  });
 
-  const inputValueMenuUpdate = (val) => {
-    setmenu(val); // Update the menu state
-  };
-  const inputValueActivityUpdate = (val) => {
-    setactivity(val); // Update the menu state
-  };
-  const inputValueCalUpdate = (val) => {
-    setcal(val); // Update the menu state
+  const inputValueUpdate = (val, prop) => {
+    setState((prevState) => ({
+      ...prevState,
+      [prop]: val,
+    }));
   };
 
   const menuData = [
@@ -65,8 +64,8 @@ const CalActivities = ({ navigation }) => {
           style={styles.input}
           iconName="ios-search"
           placeholder="รายการกิจกรรม"
-          value={menu}
-          onChangeText={inputValueMenuUpdate}
+          value={state.menu}
+          onChangeText={(val) => inputValueUpdate(val, "menu")}
         />
       </View>
       <View style={styles.listContainer}>
@@ -95,14 +94,14 @@ const CalActivities = ({ navigation }) => {
           <TextInput
             style={styles.inputNew}
             placeholder="                                    "
-            value={activity}
-            onChangeText={inputValueActivityUpdate}
+            value={state.activity}
+            onChangeText={(val) => inputValueUpdate(val, "activity")}
           />
           <TextInput
             style={styles.inputNew}
             placeholder="                 "
-            value={cal}
-            onChangeText={inputValueCalUpdate}
+            value={state.cal}
+            onChangeText={(val) => inputValueUpdate(val, "cal")}
           />
         </View>
         <View style={styles.inputContainer2}>
