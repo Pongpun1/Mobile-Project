@@ -5,11 +5,6 @@ import bcrypt from 'react-native-bcrypt';
 import { useSelector, useDispatch} from "react-redux";
 import { userData, clearData } from "../store/actions/userAction";
 
-bcrypt.setRandomFallback((len) => {
-  const buf = new Uint8Array(len);
-  return buf.map(() => Math.floor(Math.random() * 256));
-});
-
 const RegisterScreen = ({route, navigation}) =>{
   const dispatch = useDispatch();
   const AccountCollection = firebase.firestore().collection("accounts");
@@ -27,6 +22,11 @@ const RegisterScreen = ({route, navigation}) =>{
       [prop]: val
     }));
   }
+
+  bcrypt.setRandomFallback((len) => {
+    const buf = new Uint8Array(len);
+    return buf.map(() => Math.floor(Math.random() * 256));
+  });
   
   const reigster = () => {
     // navigation.navigate("หน้าหลักใช้งาน", { screen: "ข้อมูลส่วนตัว", params: { key: "xvK6T4sDO2AB5ldcKBSa" } });

@@ -12,6 +12,7 @@ import bcrypt from 'react-native-bcrypt';
 import { useSelector, useDispatch} from "react-redux";
 import { userData, clearData } from "../store/actions/userAction";
 const LoginScreen = ({route, navigation}) =>{
+
   const dispatch = useDispatch();
   const AccountCollection = firebase.firestore().collection("accounts");
   const [state, setState] = useState({
@@ -25,6 +26,11 @@ const LoginScreen = ({route, navigation}) =>{
       [prop]: val
     }));
   }
+
+  bcrypt.setRandomFallback((len) => {
+    const buf = new Uint8Array(len);
+    return buf.map(() => Math.floor(Math.random() * 256));
+  });
 
   const handleLogin = (userId) => {
     dispatch(userData(userId));

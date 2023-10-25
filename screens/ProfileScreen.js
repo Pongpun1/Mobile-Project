@@ -10,11 +10,13 @@ import {
   Platform,
   Alert
 } from "react-native";
-import firebase from '../database/calcalDB';
+
 import {Picker} from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSelector, useDispatch} from "react-redux";
 import { userData, clearData } from "../store/actions/userAction";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import firebase from '../database/calcalDB';
+
 
 const ProfileScreen = ({route, navigation}) =>{
   const AccountCollection = firebase.firestore().collection("accounts");
@@ -30,6 +32,13 @@ const ProfileScreen = ({route, navigation}) =>{
     date: new Date(),
     showPicker: false
   });
+
+  const inputValueUpdate = (val, prop) => {
+    setState(prevState => ({
+      ...prevState,
+      [prop]: val
+    }));
+  }
 
   const fetchUserData = useCallback(() => {
     const userDoc = firebase
@@ -67,12 +76,6 @@ const ProfileScreen = ({route, navigation}) =>{
     return unsubscribe;
   }, [navigation, fetchUserData]);
 
-  const inputValueUpdate = (val, prop) => {
-    setState(prevState => ({
-      ...prevState,
-      [prop]: val
-    }));
-  }
 
   const calculateAge = (birthday) => {
     const birthDate = new Date(birthday);
@@ -213,7 +216,6 @@ const ProfileScreen = ({route, navigation}) =>{
                 selectedValue={state.gender}
                 onValueChange={(val) => {
                   inputValueUpdate(val, "gender")
-                  
                 }}
                 style={styles.dropdown}
               >
