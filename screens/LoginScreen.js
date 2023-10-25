@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
   StyleSheet,Text,
   View,
@@ -10,9 +10,8 @@ import {
 import firebase from '../database/calcalDB';
 import bcrypt from 'react-native-bcrypt';
 import { useSelector, useDispatch} from "react-redux";
-import { userData, clearData } from "../store/actions/userAction";
+import { userKey, clearData } from "../store/actions/userAction";
 const LoginScreen = ({route, navigation}) =>{
-
   const dispatch = useDispatch();
   const AccountCollection = firebase.firestore().collection("accounts");
   const [state, setState] = useState({
@@ -33,11 +32,12 @@ const LoginScreen = ({route, navigation}) =>{
   });
 
   const handleLogin = (userId) => {
-    dispatch(userData(userId));
+    dispatch(userKey(userId));
     navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: userId } });
   }
 
   const login = () => {
+    // dispatch(userKey("Z4HNI9AMbdVA8piXkJQE"));
     // navigation.navigate("หน้าหลักใช้งาน", { screen: "แคลอรี่วันนี้", params: { key: "Z4HNI9AMbdVA8piXkJQE" } });
     if (!state.username || !state.password) {
       Alert.alert(

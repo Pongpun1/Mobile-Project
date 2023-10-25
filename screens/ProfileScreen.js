@@ -10,7 +10,6 @@ import {
   Platform,
   Alert
 } from "react-native";
-
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSelector, useDispatch} from "react-redux";
@@ -20,7 +19,6 @@ import firebase from '../database/calcalDB';
 
 const ProfileScreen = ({route, navigation}) =>{
   const AccountCollection = firebase.firestore().collection("accounts");
-  // const { key } = route.params;
   const key = useSelector(state => state.account.key);
   const [state, setState] = useState({
     gender: '',
@@ -40,42 +38,38 @@ const ProfileScreen = ({route, navigation}) =>{
     }));
   }
 
-  const fetchUserData = useCallback(() => {
-    const userDoc = firebase
-      .firestore()
-      .collection("accounts")
-      .doc(key);
-    userDoc.get().then((res) => {
-      if (res.exists) {
-        const user = res.data();
-        setState(prevState => ({
-          ...prevState,
-          key: res.id,
-          gender: user.gender,
-          birthday: user.birthday,
-          date: birthdayToDate(user.birthday),
-          weight: user.weight,
-          height: user.height,
-          activity: user.activity,
-          tdee: user.TDEE,
-        }));
-      } else {
-        console.log("Document does not exist!!");
-      }
-    });
-  }, [key]);
-
   useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
-
-  useEffect(() => {
+    const fetchUserData = () => {
+      const userDoc = firebase
+        .firestore()
+        .collection("accounts")
+        .doc(key);
+      userDoc.get().then((res) => {
+        if (res.exists) {
+          const user = res.data();
+          setState(prevState => ({
+            ...prevState,
+            key: res.id,
+            gender: user.gender,
+            birthday: user.birthday,
+            date: birthdayToDate(user.birthday),
+            weight: user.weight,
+            height: user.height,
+            activity: user.activity,
+            tdee: user.TDEE,
+          }));
+        } else {
+          console.log("Document does not exist!!");
+        }
+      });
+    };
+  
     const unsubscribe = navigation.addListener('focus', () => {
       fetchUserData();
     });
+  
     return unsubscribe;
-  }, [navigation, fetchUserData]);
-
+  }, [navigation]);
 
   const calculateAge = (birthday) => {
     const birthDate = new Date(birthday);
