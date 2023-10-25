@@ -21,6 +21,7 @@ const MenuScreen = ({navigation}) => {
     menu: '',
     activity: '',
     filteredFoods: [],
+    filteredActivitys: [],
   });
 
   const inputValueUpdate = (val, prop) => {
@@ -29,6 +30,11 @@ const MenuScreen = ({navigation}) => {
       [prop]: val
     }));
   }
+
+  useEffect(() => {
+    inputValueUpdate(foods, "filteredFoods")
+    inputValueUpdate(activitys, "filteredActivitys")
+  }, []);
 
   const test = () => {
     console.log(menuData)
@@ -81,7 +87,7 @@ const MenuScreen = ({navigation}) => {
         <TextInput
           style={styles.input}
           iconName="ios-search"
-          placeholder="ค้นหา"
+          placeholder="ค้นหาอาหาร"
           value={state.menu}
           onChangeText={(val) => {
             inputValueUpdate(val, "menu");
@@ -94,7 +100,7 @@ const MenuScreen = ({navigation}) => {
       <View style={[styles.listContainer]}>
         <View style={styles.HeadItem}>
           <Text style={styles.text}>รายการอาหาร</Text>
-          <Text style={styles.text}>ได้รับแคลอรี่</Text>
+          <Text style={styles.text}>ได้รับ Kcal</Text>
         </View>
         <FlatList
           data={state.filteredFoods}
@@ -103,7 +109,7 @@ const MenuScreen = ({navigation}) => {
           renderItem={({ item }) => (
             <View style={styles.listItem}>
               <Text style={styles.text1}>{item.name}</Text>
-              <Text style={styles.text1}>{item.kcalories} kcal</Text>
+              <Text style={styles.text1}>{item.kcalories}</Text>
             </View>
           )}
         />
@@ -124,26 +130,28 @@ const MenuScreen = ({navigation}) => {
         <TextInput
           style={styles.input}
           iconName="ios-search"
-          placeholder="ค้นหา"
+          placeholder="ค้นหากิจกรรม"
           value={state.activity}
           onChangeText={(val) => {
-            inputValueUpdate(val, "activity")
+            inputValueUpdate(val, "activity");
+            const filteredActivitys = activitys.filter(activity => activity.name.toLowerCase().includes(val.toLowerCase()));
+            inputValueUpdate(filteredActivitys, "filteredActivitys")
           }}
         />
       </View>
       <View style={[styles.listContainer, {marginBottom: '10%'}]}>
         <View style={styles.HeadItem}>
           <Text style={styles.text}>รายการกิจกรรม</Text>
-          <Text style={styles.text}>เผาผลาญแคลอรี่</Text>
+          <Text style={styles.text}>เผาผลาญ Kcal</Text>
         </View>
         <FlatList
-          data={activitys}
+          data={state.filteredActivitys}
           keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={true}
           renderItem={({ item }) => (
             <View style={styles.listItem}>
               <Text style={styles.text1}>{item.name}</Text>
-              <Text style={styles.text1}>{item.kcalories} kcal</Text>
+              <Text style={styles.text1}>{item.kcalories}</Text>
             </View>
           )}
         />
@@ -217,6 +225,7 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 20,
     opacity: 0.6,
+    width: 300,
   },
   Text: {
     fontWeight: "bold",
