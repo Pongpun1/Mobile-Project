@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome5 } from "@expo/vector-icons";
 import {
   StyleSheet,
   View,
   Text,
   Dimensions,
-  FlatList,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
 } from "react-native";
-import { BarChart } from "react-native-chart-kit";
+import { ProgressChart } from "react-native-chart-kit";
 
 const MainScreen = ({ navigation }) => {
   const [state, setState] = useState({
@@ -31,53 +29,36 @@ const MainScreen = ({ navigation }) => {
     { name: "ผัดไทย", calories: 420 },
     { name: "สลัด", calories: 180 },
     { name: "พิซซ่า", calories: 700 },
-  
   ];
 
   const ActivityData = [
     { name: "วิดพื้น", calories: 350 },
     { name: "ซิดอัพ", calories: 300 },
     { name: "วิ่ง", calories: 200 },
-
   ];
+
+  const data = {
+    data: [0.8, 0.2],
+    labels: ["ที่ได้รับ", "คงเหลือ"]
+  };
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.HeadText}>แคลอรี่ในวันนี้ของคุณ</Text>
-        <BarChart
-          data={{
-            labels: ["แคลอรี่ที่ควรได้รับ", "แคลอรี่ที่ได้รับ", "คงเหลือ"],
-            datasets: [
-              {
-                // ใส่ข้อมูลตรงนี้
-                data: [1500, 1200, 400],
-                colors: [() => "#48ACCB", () => "#72CB48", () => "#F99D49"],
-              },
-            ],
-          }}
+        <Text style={styles.HeadText}>ปริมาณแคลอรี่ของคุณในวันนี้</Text>
+        <ProgressChart
+          data={data}
           width={Dimensions.get("window").width * 0.9}
-          height={250}
-          fromZero="true"
-          yAxisSuffix="kcal"
-          yAxisInterval={1}
+          height={220}
           chartConfig={{
-            backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#9FC9FB",
-            backgroundGradientFromOpacity: 0.6,
+            backgroundGradientFrom: "#5BA6FF  ",
             backgroundGradientTo: "#76B5FF",
-            backgroundGradientToOpacity: 1,
-            decimalPlaces: 0,
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            barPercentage: 0.7,
           }}
-          showBarTops={false}
-          withCustomBarColorFromData
           style={{
-            marginVertical: 8,
-            borderRadius: 10,
             fontWeight: "bold",
+            borderRadius: 16,
           }}
         />
 
@@ -90,24 +71,22 @@ const MainScreen = ({ navigation }) => {
           </View>
           <View style={[styles.listContainer]}>
             {menuData.map((item, index) => (
-                <View key={index} style={styles.foodItem}>
-                  <View style={styles.itemRow1}>
-                    <Text style={styles.textcount}>{item.name}</Text>
-                    <Text style={styles.textcount}>Text * 1</Text>
-                  </View>
-                  <View style={styles.itemRow}>
-                    <Text style={styles.textcal}>{item.calories} kcal</Text>
-                    <TouchableOpacity style={styles.iconContainer}>
-                      <FontAwesome5 name="trash-alt" size={24} color="black" />
-                    </TouchableOpacity>
-                  </View>
+              <View key={index} style={styles.foodItem}>
+                <View style={styles.itemRow1}>
+                  <Text style={styles.textcount}>{item.name}</Text>
+                  <Text style={styles.textcount}>Text * 1</Text>
                 </View>
-              ))}
+                <View style={styles.itemRow}>
+                  <Text style={styles.textcal}>{item.calories} kcal</Text>
+                  <TouchableOpacity style={styles.iconContainer}>
+                    <FontAwesome5 name="trash-alt" size={24} color="black" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
           </View>
           <View style={styles.bottomBar}></View>
         </View>
-
-
 
         <View style={styles.list}>
           <View style={styles.headerContainer}>
@@ -117,7 +96,7 @@ const MainScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={[styles.listContainer]}>
-              {ActivityData.map((item, index) => (
+            {ActivityData.map((item, index) => (
               <View key={index} style={styles.foodItem}>
                 <View style={styles.itemRow1}>
                   <Text style={styles.textcount}>{item.name}</Text>
@@ -134,8 +113,6 @@ const MainScreen = ({ navigation }) => {
           </View>
           <View style={styles.bottomBar}></View>
         </View>
-
-
       </View>
     </ScrollView>
   );
@@ -206,9 +183,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#D9D9D9",
     justifyContent: "space-between",
     borderBottomWidth: 3,
-    borderBottomColor: 'black',
+    borderBottomColor: "black",
   },
-  
+
   itemRow: {
     flexDirection: "row",
     alignItems: "flex-end",
