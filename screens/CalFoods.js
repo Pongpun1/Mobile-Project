@@ -1,16 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { userKey, clearData } from "../store/actions/userAction";
+
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View, FlatList, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 
 const CalFoods = ({ navigation }) => {
-  const [menu, setmenu] = useState("");
-  const inputValueUpdate = (val) => {
-    setmenu(val); // Update the menu state
+  const foods = useSelector((state) => state.account.foods);
+  const activitys = useSelector((state) => state.account.activitys);
+
+  const [state, setState] = useState({
+    menu: "",
+    activity: "",
+    filteredFoods: [],
+    filteredActivitys: [],
+  });
+
+  const inputValueUpdate = (val, prop) => {
+    setState((prevState) => ({
+      ...prevState,
+      [prop]: val,
+    }));
+  };
+
+  useEffect(() => {
+    inputValueUpdate(foods, "filteredFoods");
+    inputValueUpdate(activitys, "filteredActivitys");
+  }, []);
+
+  const test = () => {
+    console.log(menuData)
   };
 
   const menuData = [
-    { name: "ก๋วยเตี๋ยวเนื้อ", calories: 350 },
-    { name: "ผัดไทย", calories: 420 },
+    { name: "w", calories: 350 },
+    { name: "www", calories: 420 },
     { name: "สลัด", calories: 180 },
     { name: "พิซซ่า", calories: 700 },
     { name: "ไก่ทอด", calories: 450 },
@@ -34,37 +65,43 @@ const CalFoods = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headText}>รายการอาหาร</Text>
-      </View>
-      <View style={styles.searchInputContainer}>
-        <Ionicons
-          name="ios-search"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          style={styles.input}
-          iconName="ios-search"
-          placeholder="รายการอาหาร"
-          value={menu}
-          onChangeText={inputValueUpdate}
-        />
-      </View>
-
-      <View style={styles.listContainer}>
-        <View style={styles.foodHeadItem}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headText}>รายการอาหาร</Text>
+        </View>
+        <View style={styles.searchInputContainer}>
+          <Ionicons
+            name="ios-search"
+            size={24}
+            color="gray"
+            style={styles.icon}
+          />
+          <TextInput
+            style={styles.input}
+            iconName="ios-search"
+            placeholder="ค้นหาอาหาร"
+            value={state.menu}
+            onChangeText={(val) => {
+              inputValueUpdate(val, "menu");
+              const filteredFoods = foods.filter((food) =>
+                food.name.toLowerCase().includes(val.toLowerCase())
+              );
+              inputValueUpdate(filteredFoods, "filteredFoods");
+            }}
+          />
+        </View>
+      <View style={[styles.listContainer]}>
+        <View style={styles.HeadItem}>
           <Text style={styles.text}>รายการอาหาร</Text>
-          <Text style={styles.text}>kcal</Text>
+          <Text style={styles.text}>ได้รับ kcal</Text>
         </View>
         <FlatList
-          data={menuData}
+          data={state.filteredFoods}
           keyExtractor={(item, index) => index.toString()}
+          nestedScrollEnabled={true}
           renderItem={({ item }) => (
-            <View style={styles.foodItem}>
-              <Text style={styles.text}>{item.name}</Text>
-              <Text style={styles.text}>{item.calories} kcal</Text>
+            <View style={styles.listItem}>
+              <Text style={styles.text1}>{item.name}</Text>
+              <Text style={styles.text1}>{item.kcalories}</Text>
             </View>
           )}
         />
@@ -81,46 +118,55 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "90%",
-    margin: 10,
+    justifyContent: "flex-start",
+    width: 350,
+    height: 30,
+    marginTop: 25,
+  },
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 350,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    paddingLeft: 10,
+    margin: 15,
+  },
+  iconContainer: {
+    marginTop: 0,
   },
   headText: {
     fontWeight: "bold",
-    fontSize: 30,
-    marginTop: 30,
+    fontSize: 20,
   },
   listContainer: {
     alignItems: "center",
-    width: "90%",
-    flex: 1,
+    width: 350,
+    height: 250,
   },
   text: {
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 20,
-    padding: 12,
+    fontSize: 17,
+    padding: 7,
   },
-  foodHeadItem: {
+  text1: {
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 15,
+    padding: 7,
+  },
+  HeadItem: {
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
     backgroundColor: "#71B2FF",
   },
-  foodItem: {
+  listItem: {
     flexDirection: "row",
-    width: "83%",
     justifyContent: "space-between",
     backgroundColor: "lightgray",
-  },
-  searchInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-    margin: 10,
-    backgroundColor: "#D9D9D9",
-    borderRadius: 10,
-    paddingLeft: 10,
+    width: 350,
   },
   icon: {
     padding: 5,
@@ -128,11 +174,11 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 20,
     opacity: 0.6,
+    width: 300,
   },
   Text: {
     fontWeight: "bold",
     fontSize: 16,
-    marginRight: 270,
   },
 });
 

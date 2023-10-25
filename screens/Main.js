@@ -65,7 +65,10 @@ const MainScreen = ({ navigation }) => {
         <View style={styles.list}>
           <View style={styles.headerContainer}>
             <Text style={styles.headText2}>รายการอาหาร</Text>
-            <TouchableOpacity style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={() => {navigation.navigate("รายการอาหาร");} }
+            >
               <Entypo name="plus" size={24} color="black" />
             </TouchableOpacity>
           </View>
@@ -90,8 +93,11 @@ const MainScreen = ({ navigation }) => {
 
         <View style={styles.list}>
           <View style={styles.headerContainer}>
-            <Text style={styles.headText2}>รายการออกกำลังกาย</Text>
-            <TouchableOpacity style={styles.iconContainer}>
+            <Text style={styles.headText2}>รายการกิจกรรม</Text>
+            <TouchableOpacity 
+              style={styles.iconContainer}
+              onPress={() => {navigation.navigate("รายการกิจกรรม");} }
+            >
               <Entypo name="plus" size={24} color="black" />
             </TouchableOpacity>
           </View>

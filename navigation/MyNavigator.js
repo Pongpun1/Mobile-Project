@@ -20,6 +20,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import CalFoods from "../screens/CalFoods";
+import CalActivities from "../screens/CalActivities";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -64,10 +66,12 @@ function DrawerNavigator() {
         drawerPosition: "right",
         drawerActiveTintColor: "#71B2FF",
         drawerInactiveTintColor: "gray",
+        headerShown: false
+
       }}
     >
       <Drawer.Screen
-        name="แคลอรี่วันนี้"
+        name="Main"
         component={MainTabNavi}
         options={({ route, navigation }) => ({
           drawerLabel: "หน้าหลัก",
@@ -181,9 +185,19 @@ function MainScreenNavi() {
       }}
     >
       <Stack.Screen
-        options={{ headerShown: false }}
-        name="Stackแคลอรี่วันนี้"
+        options={{ headerShown: true }}
+        name="แคลอรี่วันนี้"
         component={MainScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: true }}
+        name="รายการอาหาร"
+        component={CalFoods}
+      />
+      <Stack.Screen
+        options={{ headerShown: true }}
+        name="รายการกิจกรรม"
+        component={CalActivities}
       />
     </Stack.Navigator>
   );
@@ -199,7 +213,7 @@ function MenuScreenNavi() {
     >
       <Stack.Screen
         options={{ headerShown: false }}
-        name="Stackรายการแคลอรี่"
+        name="รายการแคลอรี่"
         component={MenuScreen}
       />
       <Stack.Screen

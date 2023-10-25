@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { userKey, clearData } from "../store/actions/userAction";
 import { Ionicons } from "@expo/vector-icons";
 import {
   StyleSheet,
@@ -11,10 +13,14 @@ import {
 import { black } from "color-name";
 
 const CalActivities = ({ navigation }) => {
+  const foods = useSelector((state) => state.account.foods);
+  const activitys = useSelector((state) => state.account.activitys);
+
   const [state, setState] = useState({
     menu: "",
     activity: "",
-    cal: "",
+    filteredFoods: [],
+    filteredActivitys: [],
   });
 
   const inputValueUpdate = (val, prop) => {
@@ -24,9 +30,18 @@ const CalActivities = ({ navigation }) => {
     }));
   };
 
+  useEffect(() => {
+    inputValueUpdate(foods, "filteredFoods");
+    inputValueUpdate(activitys, "filteredActivitys");
+  }, []);
+
+  const test = () => {
+    console.log(menuData)
+  };
+
   const menuData = [
-    { name: "ก๋วยเตี๋ยวเนื้อ", calories: 350 },
-    { name: "ผัดไทย", calories: 420 },
+    { name: "w", calories: 350 },
+    { name: "www", calories: 420 },
     { name: "สลัด", calories: 180 },
     { name: "พิซซ่า", calories: 700 },
     { name: "ไก่ทอด", calories: 450 },
@@ -63,59 +78,68 @@ const CalActivities = ({ navigation }) => {
         <TextInput
           style={styles.input}
           iconName="ios-search"
-          placeholder="รายการกิจกรรม"
-          value={state.menu}
-          onChangeText={(val) => inputValueUpdate(val, "menu")}
+          placeholder="ค้นหากิจกรรม"
+          value={state.activity}
+          onChangeText={(val) => {
+            inputValueUpdate(val, "activity");
+            const filteredActivitys = activitys.filter(activity => activity.name.toLowerCase().includes(val.toLowerCase()));
+            inputValueUpdate(filteredActivitys, "filteredActivitys")
+          }}
         />
       </View>
-      <View style={styles.listContainer}>
-        <View style={styles.foodHeadItem}>
+
+      <View style={[styles.listContainer, {marginBottom: '10%'}]}>
+        <View style={styles.HeadItem}>
           <Text style={styles.text}>รายการกิจกรรม</Text>
-          <Text style={styles.text}>kcal</Text>
+          <Text style={styles.text}>เผาผลาญ kcal</Text>
         </View>
         <FlatList
-          data={menuData}
+          data={state.filteredActivitys}
           keyExtractor={(item, index) => index.toString()}
+          nestedScrollEnabled={true}
           renderItem={({ item }) => (
-            <View style={styles.foodItem}>
-              <Text style={styles.text}>{item.name}</Text>
-              <Text style={styles.text}>{item.calories} kcal</Text>
+            <View style={styles.listItem}>
+              <Text style={styles.text1}>{item.name}</Text>
+              <Text style={styles.text1}>{item.kcalories}</Text>
             </View>
           )}
         />
       </View>
-      <View style={styles.addContainer}>
-        <Text style={styles.headText}>เพิ่มกิจกรรมด้วยตัวเอง</Text>
-        <View style={styles.inputContainer}>
-          <Text style={styles.text}>กิจกรรม</Text>
-          <Text style={styles.text}>kcal</Text>
+      
+
+        <View style={styles.addContainer}>
+          <Text style={styles.headText}>เพิ่มกิจกรรมด้วยตัวเอง</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.text}>กิจกรรม</Text>
+            <Text style={styles.text}>kcal</Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.inputNew}
+              placeholder="                                    "
+              value={state.activity}
+              onChangeText={(val) => inputValueUpdate(val, "activity")}
+            />
+            <TextInput
+              style={styles.inputNew}
+              placeholder="                 "
+              value={state.cal}
+              onChangeText={(val) => inputValueUpdate(val, "cal")}
+            />
+          </View>
+          <View style={styles.inputContainer2}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => console.log("save button")}
+            >
+              <Text style={styles.buttonText}>บันทึก</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.inputNew}
-            placeholder="                                    "
-            value={state.activity}
-            onChangeText={(val) => inputValueUpdate(val, "activity")}
-          />
-          <TextInput
-            style={styles.inputNew}
-            placeholder="                 "
-            value={state.cal}
-            onChangeText={(val) => inputValueUpdate(val, "cal")}
-          />
-        </View>
-        <View style={styles.inputContainer2}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => console.log("save button")}
-          >
-            <Text style={styles.buttonText}>บันทึก</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -125,77 +149,76 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "90%",
-    margin: 10,
+    justifyContent: "flex-start",
+    width: 350,
+    height: 30,
+    marginTop: 25,
+  },
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 350,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    paddingLeft: 10,
+    margin: 15,
+  },
+  iconContainer: {
+    marginTop: 0,
   },
   headText: {
     fontWeight: "bold",
-    fontSize: 30,
-    marginTop: 30,
+    fontSize: 20,
   },
   listContainer: {
     alignItems: "center",
-    width: "90%",
-    flex: 1,
-  },
-  addContainer: {
-    // backgroundColor: "gray",
-    alignItems: "center",
-    width: "90%",
-    flex: 0.4,
-    justifyContent: "flex-end",
-    margin: 50,
+    width: 350,
+    height: 250,
   },
   text: {
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 20,
-    padding: 12,
+    fontSize: 17,
+    padding: 7,
   },
-  foodHeadItem: {
+  text1: {
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 15,
+    padding: 7,
+  },
+  HeadItem: {
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
     backgroundColor: "#71B2FF",
   },
-  foodItem: {
+  listItem: {
     flexDirection: "row",
-    width: "83%",
     justifyContent: "space-between",
     backgroundColor: "lightgray",
-  },
-  searchInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-    margin: 10,
-    backgroundColor: "#D9D9D9",
-    borderRadius: 10,
-    paddingLeft: 10,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-    // margin: 10,
-    // backgroundColor: "#D9D9D9",
-    // borderRadius: 10,
-    // paddingLeft: 10,
-    justifyContent: "space-between",
-  },
-  inputContainer2: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-    margin: 10,
-    // backgroundColor: "#D9D9D9",
-    borderRadius: 10,
-    // paddingLeft: 10,
-    justifyContent: "flex-end",
+    width: 350,
   },
   icon: {
     padding: 5,
+  },
+  input: {
+    fontSize: 20,
+    opacity: 0.6,
+    width: 300,
+  },
+  Text: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  addContainer: {
+    backgroundColor: "gray",
+    alignItems: "center",
+    width: "90%",
+    flex: 0.4,
+    justifyContent: "flex-end",
+    margin: 50,
+    height: 90
   },
   input: {
     fontSize: 20,
@@ -208,10 +231,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#D9D9D9",
     borderRadius: 50,
   },
-  Text: {
-    fontWeight: "bold",
-    fontSize: 16,
-    marginRight: 270,
+  inputContainer2: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+    margin: 10,
+    // backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    // paddingLeft: 10,
+    justifyContent: "flex-end",
   },
   button: {
     width: 80,
@@ -228,5 +256,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
 
 export default CalActivities;
