@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   headText2: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 25,
   },
   listContainer: {
     alignItems: "center",

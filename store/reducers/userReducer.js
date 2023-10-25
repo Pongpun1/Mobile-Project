@@ -1,8 +1,11 @@
 import { USER_KEY, CLEAR_DATA  } from "../actions/userAction";
-import firebase from "../../database/calcalDB";
+import { FOODS } from "../../data/dummy-data";
+import { ACTIVITYS } from "../../data/dummy-data";
 
 const initialState = {
     key: '',
+    foods: FOODS,
+    activitys: ACTIVITYS,
 };
 
     

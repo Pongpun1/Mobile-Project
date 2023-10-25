@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, Text, View, Image, ScrollView, Alert} from "react-native";
 import firebase from '../database/calcalDB';
 import { useSelector, useDispatch} from "react-redux";
-import { userData, clearData } from "../store/actions/userAction";
+import { userKey, clearData } from "../store/actions/userAction";
 
 const BMIscreen = ({route, navigation}) => {
   const key = useSelector(state => state.account.key);
@@ -37,7 +37,8 @@ const BMIscreen = ({route, navigation}) => {
   }, [navigation, key]);
   
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
       <View style={styles.headerContainer}>
       <View style={{alignItems: "center",justifyContent: "center",}}>
         <Text style={styles.HeadText}>ค่าดัชนีมวลกายอยู่ที่</Text>
@@ -104,6 +105,7 @@ const BMIscreen = ({route, navigation}) => {
         </View>
 
       </View>
+      </View>
     </ScrollView>
   );
 };
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderWidth: 0,
+    alignItems: "center"
   },
   HeadText: {
     fontWeight: "bold",
@@ -152,6 +155,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
     flexDirection: 'row',
+    width: "90%"
   },
 });
 
