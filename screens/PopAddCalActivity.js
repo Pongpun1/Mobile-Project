@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const PopAddCalFood = ({ navigation }) => {
+const PopAddCalActivity = ({ navigation }) => {
   const [state, setState] = useState({
-    menu: "",
+    hour: "",
+    minute: "",
   });
 
   const inputValueUpdate = (val, prop) => {
@@ -22,20 +23,26 @@ const PopAddCalFood = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.addContainer}>
-        <Text style={styles.headText}>เพิ่มรายการอาหารที่กิน</Text>
+        <Text style={styles.headText}>เพิ่มรายการกิจกรรมที่ทำ</Text>
         <View style={styles.inputContainer1}>
           <Text style={styles.text}>Text you click</Text>
           <Text style={styles.text}>Cal</Text>
         </View>
         <View style={styles.inputContainer}>
-          <Text style={styles.text}>จำนวน</Text>
+          <Text style={styles.text}>เวลา</Text>
 
           <TextInput
             style={styles.textInput}
             value={state.menu}
-            onChangeText={(val) => inputValueUpdate(val, "menu")}
+            onChangeText={(val) => inputValueUpdate(val, "hour")}
           />
-          <Text style={styles.unit}>จาร</Text>
+          <Text style={styles.unit}>ชั่วโมง</Text>
+          <TextInput
+            style={styles.textInput}
+            value={state.menu}
+            onChangeText={(val) => inputValueUpdate(val, "minute")}
+          />
+          <Text style={styles.unit}>นาที</Text>
         </View>
         <View style={styles.inputContainer2}>
           <TouchableOpacity
@@ -145,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PopAddCalFood;
+export default PopAddCalActivity;
