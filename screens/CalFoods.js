@@ -1,25 +1,27 @@
 import React, { useState, useEffect, useCallback } from "react";
+import Modal from "react-native-modal"
 import { useSelector, useDispatch } from "react-redux";
-import { userKey, clearData } from "../store/actions/userAction";
+import { userKey, clearData, addFood } from "../store/actions/userAction";
 
 import { Ionicons } from "@expo/vector-icons";
 import {
   StyleSheet,
-  Text,
   View,
-  FlatList,
+  Text,
   TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  FlatList
 } from "react-native";
 
 const CalFoods = ({ navigation }) => {
+  const dispatch = useDispatch()
   const foods = useSelector((state) => state.account.foods);
-  const activitys = useSelector((state) => state.account.activitys);
 
   const [state, setState] = useState({
     menu: "",
-    activity: "",
     filteredFoods: [],
-    filteredActivitys: [],
   });
 
   const inputValueUpdate = (val, prop) => {
@@ -31,12 +33,12 @@ const CalFoods = ({ navigation }) => {
 
   useEffect(() => {
     inputValueUpdate(foods, "filteredFoods");
-    inputValueUpdate(activitys, "filteredActivitys");
   }, []);
 
   const test = () => {
     console.log(menuData)
   };
+  
 
   const menuData = [
     { name: "w", calories: 350 },
@@ -98,10 +100,18 @@ const CalFoods = ({ navigation }) => {
           keyExtractor={(item, index) => index.toString()}
           nestedScrollEnabled={true}
           renderItem={({ item }) => (
-            <View style={styles.listItem}>
+            <TouchableOpacity 
+              style={styles.listItem} 
+              onPress={() => {
+                navigation.navigate('ใส่อาหาร', {
+                  name: item.name,
+                  kcalories: item.kcalories
+                });
+              }}
+            >
               <Text style={styles.text1}>{item.name}</Text>
               <Text style={styles.text1}>{item.kcalories}</Text>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -178,6 +188,17 @@ const styles = StyleSheet.create({
   Text: {
     fontWeight: "bold",
     fontSize: 16,
+  },
+  closeButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: "#71B2FF",
+    borderRadius: 5,
+    alignSelf: "center",
+  },
+  closeButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 

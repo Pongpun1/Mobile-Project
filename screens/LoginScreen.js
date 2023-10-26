@@ -13,6 +13,8 @@ import { useSelector, useDispatch} from "react-redux";
 import { userKey, clearData } from "../store/actions/userAction";
 const LoginScreen = ({route, navigation}) =>{
   const dispatch = useDispatch();
+  
+  // dispatch(clearData());
   const AccountCollection = firebase.firestore().collection("accounts");
   const [state, setState] = useState({
     username: '',
@@ -37,8 +39,8 @@ const LoginScreen = ({route, navigation}) =>{
   }
 
   const login = () => {
-    // dispatch(userKey("Z4HNI9AMbdVA8piXkJQE"));
-    // navigation.navigate("หน้าหลักใช้งาน", { screen: "Main", params: { key: "Z4HNI9AMbdVA8piXkJQE" } });
+    // dispatch(userKey("8vEUQ6lNdwmimDn1VJy6"));
+    // navigation.navigate("หน้าหลักใช้งาน", { screen: "Main", params: { key: "8vEUQ6lNdwmimDn1VJy6" } });
     if (!state.username || !state.password) {
       Alert.alert(
         "Missing Information",

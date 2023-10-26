@@ -1,21 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Entypo } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";  
+import { useSelector, useDispatch} from "react-redux";
+import { userKey, clearData, delFood } from "../store/actions/userAction";
+import firebase from '../database/calcalDB';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import CircularProgress from "react-native-circular-progress-indicator";
 
 const MainScreen = ({ navigation }) => {
+  const key = useSelector(state => state.account.key);
+  const todayFoods = useSelector(state => state.account.todayfoods);
+  const dispatch = useDispatch();
+  
+
   const [state, setState] = useState({
     menuList: [],
     activityList: [],
+    totalCal: 0,
+    percentage: 0,
   });
-
+  
   const inputValueUpdate = (val, prop) => {
     setState((prevState) => ({
       ...prevState,
@@ -23,18 +34,55 @@ const MainScreen = ({ navigation }) => {
     }));
   };
 
-  const menuData = [
-    { name: "ก๋วยเตี๋ยวเนื้อ", calories: 350 },
-    { name: "ผัดไทย", calories: 420 },
-    { name: "สลัด", calories: 180 },
-    { name: "พิซซ่า", calories: 700 },
-  ];
+  const handleDelete = (index) => {
+    dispatch(delFood(index))
+    const updatedMenuList = state.menuList.filter((item, i) => i !== index);
+    const sumTotalCal = updatedMenuList.reduce((total, item) => total + item.totalcal, 0);
+    inputValueUpdate(sumTotalCal, "totalCal");
+  };
 
-  const ActivityData = [
-    { name: "วิดพื้น", calories: 350 },
-    { name: "ซิดอัพ", calories: 300 },
-    { name: "วิ่ง", calories: 200 },
-  ];
+  const calculatePercentage = (cal, tdee) => {
+    if (tdee === 0) {
+      return 0;
+    }
+    const percentage = Math.round((cal / tdee) * 100);
+    return percentage;
+  };
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      inputValueUpdate(todayFoods, "menuList");
+      const sumTotalCal = todayFoods.reduce((total, item) => total + item.totalcal, 0);
+      inputValueUpdate(sumTotalCal, "totalCal");
+      inputValueUpdate(calculatePercentage(sumTotalCal, state.tdee), "percentage");
+      
+      console.log(state.percentage)
+      console.log(todayFoods);
+      console.log(sumTotalCal);
+      const userDoc = firebase.firestore().collection("accounts").doc(key);
+      const res = await userDoc.get();
+      if (res.exists) {
+        const user = res.data();
+        if (user.TDEE) {
+          setState(prevState => ({
+            ...prevState,
+            key: res.id,
+            tdee: user.TDEE,
+          }));
+        } else {
+          Alert.alert('Missing Information', 'กรุณากรอกข้อมูลส่วนตัวของคุณก่อน');
+          navigation.navigate("หน้าหลักใช้งาน", { screen: "ข้อมูลส่วนตัว", params: { key: key } });
+        }
+      } else {
+        console.log("Document does not exist!!");
+      }
+    };
+    fetchUserData();
+    const unsubscribe = navigation.addListener('focus', fetchUserData);
+    return unsubscribe;
+  }, [navigation, key, todayFoods]);
+
 
   return (
     <ScrollView>
@@ -42,8 +90,8 @@ const MainScreen = ({ navigation }) => {
         <Text style={styles.HeadText}>เปอร์เซ็นต์แคลอรี่ที่กินวันนี้</Text>
         <CircularProgress
           radius={100}
-          value={85}
-          maxValue={100}
+          value={state.percentage}
+          // maxValue={100}
           progressValueColor={"#5BA6FF"}
           fontSize={20}
           valueSuffix={"%"}
@@ -54,7 +102,8 @@ const MainScreen = ({ navigation }) => {
           inActiveStrokeWidth={6}
           duration={1000}
         />
-
+        <Text style={styles.HeadText}>ควรได้รับ {state.tdee} kcal</Text>
+        <Text style={styles.HeadText}>ได้รับแล้ว {state.totalCal} kcal</Text>
         <View style={styles.list}>
           <View style={styles.headerContainer}>
             <Text style={styles.headText2}>รายการอาหาร</Text>
@@ -66,15 +115,18 @@ const MainScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={[styles.listContainer]}>
-            {menuData.map((item, index) => (
+            {state.menuList.map((item, index) => (
               <View key={index} style={styles.foodItem}>
                 <View style={styles.itemRow1}>
                   <Text style={styles.textcount}>{item.name}</Text>
-                  <Text style={styles.textcount}>Text * 1</Text>
+                  <Text style={styles.textcount}>{item.kcal} kcal x {item.unit}</Text>
                 </View>
                 <View style={styles.itemRow}>
-                  <Text style={styles.textcal}>{item.calories} kcal</Text>
-                  <TouchableOpacity style={styles.iconContainer}>
+                  <Text style={styles.textcal}>{item.totalcal} kcal</Text>
+                  <TouchableOpacity
+                  style={styles.iconContainer}
+                  onPress={() => handleDelete(index)}
+                  >
                     <FontAwesome5 name="trash-alt" size={24} color="black" />
                   </TouchableOpacity>
                 </View>
@@ -95,7 +147,7 @@ const MainScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={[styles.listContainer]}>
-            {ActivityData.map((item, index) => (
+            {state.activityList.map((item, index) => (
               <View key={index} style={styles.foodItem}>
                 <View style={styles.itemRow1}>
                   <Text style={styles.textcount}>{item.name}</Text>

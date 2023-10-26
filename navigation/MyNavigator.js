@@ -15,6 +15,7 @@ import RegisterScreen from "../screens/RegisterScreen";
 import AccountScreen from "../screens/AccountScreen";
 import AddFoodScreen from "../screens/AddFood";
 import AddActivityScreen from "../screens/AddActivity";
+import PopAddCalFood from "../screens/PopAddCalFood";
 
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -193,6 +194,11 @@ function MainScreenNavi() {
         options={{ headerShown: true }}
         name="รายการอาหาร"
         component={CalFoods}
+      />
+      <Stack.Screen
+        options={{ headerShown: true }}
+        name="ใส่อาหาร"
+        component={PopAddCalFood}
       />
       <Stack.Screen
         options={{ headerShown: true }}

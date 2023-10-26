@@ -1,3 +1,4 @@
+import route from "color-convert/route";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -5,12 +6,36 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { userKey, clearData, addFood } from "../store/actions/userAction";
 
-const PopAddCalFood = ({ navigation }) => {
+const PopAddCalFood = ({route, navigation }) => {
+  const { name, kcalories } = route.params;
   const [state, setState] = useState({
-    menu: "",
+    menu: "1",
   });
+
+  const dispatch = useDispatch() 
+
+  const addFoodHandler = () => {
+    if (!state.menu) {
+      Alert.alert(
+        "Missing Amount",
+        "กรุณากรอกจำนวน"
+      );
+      return;
+    }else if(state.menu <= 0){
+      Alert.alert(
+        "Incorrect Amount",
+        "จำนวนต้องมากกว่า 0"
+      );
+      return;
+    }
+    dispatch(addFood(name, kcalories, state.menu));
+    navigation.navigate("แคลอรี่วันนี้")
+  };
 
   const inputValueUpdate = (val, prop) => {
     setState((prevState) => ({
@@ -24,8 +49,8 @@ const PopAddCalFood = ({ navigation }) => {
       <View style={styles.addContainer}>
         <Text style={styles.headText}>เพิ่มรายการอาหารที่กิน</Text>
         <View style={styles.inputContainer1}>
-          <Text style={styles.text}>Text you click</Text>
-          <Text style={styles.text}>Cal</Text>
+          <Text style={styles.text}>{name}</Text>
+          <Text style={styles.text}>{kcalories} Cal</Text>
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.text}>จำนวน</Text>
@@ -35,18 +60,18 @@ const PopAddCalFood = ({ navigation }) => {
             value={state.menu}
             onChangeText={(val) => inputValueUpdate(val, "menu")}
           />
-          <Text style={styles.unit}>จาร</Text>
+          {/* <Text style={styles.unit}></Text> */}
         </View>
         <View style={styles.inputContainer2}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => console.log("save button")}
+            onPress={() => addFoodHandler()}
           >
             <Text style={styles.buttonText}>บันทึก</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => console.log("cancel button")}
+            onPress={() => {navigation.navigate("รายการอาหาร");} }
           >
             <Text style={styles.buttonText}>ยกเลิก</Text>
           </TouchableOpacity>
@@ -112,7 +137,7 @@ const styles = StyleSheet.create({
   inputContainer1: {
     flexDirection: "row",
     alignItems: "center",
-    width: 350,
+    width: "80%",
     margin: 10,
     // backgroundColor: "#D9D9D9",
     borderRadius: 50,
