@@ -47,17 +47,32 @@ const ProfileScreen = ({route, navigation}) =>{
       userDoc.get().then((res) => {
         if (res.exists) {
           const user = res.data();
-          setState((prevState) => ({
-            ...prevState,
-            key: res.id,
-            gender: user.gender,
-            birthday: user.birthday,
-            date: birthdayToDate(user.birthday),
-            weight: user.weight,
-            height: user.height,
-            activity: user.activity,
-            tdee: user.TDEE,
-          }));
+          if (user.TDEE) {
+            setState((prevState) => ({
+              ...prevState,
+              key: res.id,
+              gender: user.gender,
+              birthday: user.birthday,
+              date: birthdayToDate(user.birthday),
+              weight: user.weight,
+              height: user.height,
+              activity: user.activity,
+              tdee: user.TDEE,
+            }));
+          } else {
+            setState((prevState) => ({
+              ...prevState,
+              gender: '',
+              birthday: '',
+              weight: '',
+              height: '',
+              activity: '',
+              tdee: '0',
+              date: new Date(),
+              showPicker: false
+            }));
+          }
+          
         } else {
           console.log("Document does not exist!!");
           setState((prevState) => ({

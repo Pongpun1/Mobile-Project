@@ -25,6 +25,7 @@ const MainScreen = ({ navigation }) => {
     activityList: [],
     totalCal: 0,
     percentage: 0,
+    tdee: 0,
   });
   
   const inputValueUpdate = (val, prop) => {
@@ -81,13 +82,13 @@ const MainScreen = ({ navigation }) => {
     fetchUserData();
     const unsubscribe = navigation.addListener('focus', fetchUserData);
     return unsubscribe;
-  }, [navigation, key, todayFoods]);
+  }, [navigation, key, todayFoods, state.tdee]);
 
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.HeadText}>เปอร์เซ็นต์แคลอรี่ที่กินวันนี้</Text>
+        <Text style={styles.HeadText}>เปอร์เซ็นต์แคลอรี่</Text>
         <CircularProgress
           radius={100}
           value={state.percentage}

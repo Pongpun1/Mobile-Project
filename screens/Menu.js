@@ -122,9 +122,16 @@ const MenuScreen = ({ navigation }) => {
 
       <View style={styles.headerContainer}>
         <Text style={styles.headText}>รายการกิจกรรม</Text>
-        <TouchableOpacity style={styles.iconContainer}>
-          <Ionicons name="ios-add" size={32} color="#71B2FF" />
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconContainer} onPress={() => test()}>
+            <Ionicons
+              name="ios-add"
+              size={32}
+              color="#71B2FF"
+              onPress={() => {
+                navigation.navigate("เพิ่มรายการกิจกรรม");
+              }}
+            />
+          </TouchableOpacity>
       </View>
       <View style={styles.searchInputContainer}>
         <Ionicons
